@@ -9,12 +9,18 @@ import java.io.File;
  * Created by walter.xu on 2016/12/13.
  */
 public class OCRPraser {
+    private static final String INVOICE_LIMIT_CHARS = "1234567890.：:-普通发票发票代码发票号码开票日期检验码年月日机器编号密码区购买方名称纳税人识别码地址电话开户行及账号合计货物或应税劳务服务名称规格型号单位数量单价金额税率税额税额合计（）大壹贰叁肆伍陆柒捌玖拾佰仟万亿小写销售方备注收款人符合开票人";
 
     private static class OCRPraserHolder{
         private static ITesseract instance = new Tesseract1();
         static {
             instance.setLanguage("chi_sim");
+            instance.setTessVariable("tessedit_char_whitelist", INVOICE_LIMIT_CHARS);
         }
+    }
+
+    public static String praseText(File imageFile) throws Exception {
+        return OCRPraserHolder.instance.doOCR(imageFile);
     }
 
     public static String[] praseNumberAndCode(File imageFile) throws Exception{

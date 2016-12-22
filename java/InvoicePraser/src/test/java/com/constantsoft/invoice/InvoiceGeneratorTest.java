@@ -18,4 +18,6 @@ public class InvoiceGeneratorTest {
         path = "D:\\log\\pdf\\test.jpg";
         System.out.println(Arrays.toString(InvoiceGenerator.instance().generateInvoiceCodeAndNumberValidateByPdfAndQrcode(path)));
     }
+
+
 }

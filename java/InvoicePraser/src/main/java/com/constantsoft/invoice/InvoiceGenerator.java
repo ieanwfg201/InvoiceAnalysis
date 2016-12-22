@@ -47,7 +47,7 @@ public class InvoiceGenerator {
                 String[] codeAndNumberArrayFromPdfText = PdfTextPraser.praseNumberAndCode(doc);
 
                 PDFRenderer render = new PDFRenderer(doc);
-                BufferedImage image = render.renderImageWithDPI(doc.getNumberOfPages() - 1, 300);
+                BufferedImage image = render.renderImageWithDPI(doc.getNumberOfPages() - 1, 200);
                 String[] codeAndNumberArrayFromQrcode = QRCodePraser.praseNumberAndCode(image);
 
                 return selectCorrectCodeAndNumberArray(codeAndNumberArrayFromPdfText, codeAndNumberArrayFromQrcode);
