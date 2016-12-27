@@ -1,6 +1,9 @@
 package com.constantsoft.invoice.praser;
 
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
 
@@ -12,15 +15,23 @@ import java.util.Arrays;
 public class OCRPraserTest {
 
     public static void main(String[] args) throws Exception {
+        double xStart = 0.7;
+        double xEnd = 1;
+        double yStart = 0;
+        double yEnd = 0.2;
         String file = "D:\\log\\pdf\\10.pdf.300.jpg";
-//        long start = System.currentTimeMillis();
-//        System.out.println(Arrays.toString(OCRPraser.praseNumberAndCode(new File(file))));
-//        System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
-//        start = System.currentTimeMillis();
-//        System.out.println(Arrays.toString(OCRPraser.praseNumberAndCode(new File(file))));
-//        System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
         long start = System.currentTimeMillis();
-        String text = OCRPraser.praseText(new File(file));
+        System.out.println(Arrays.toString(OCRPraser.praseNumberAndCodeByPart(new File(file),xStart,yStart,xEnd,yEnd)));
+        System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
+        start = System.currentTimeMillis();
+        System.out.println(Arrays.toString(OCRPraser.praseNumberAndCodeByPart(new File(file), xStart, yStart, xEnd, yEnd)));
+        System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
+        start = System.currentTimeMillis();
+//        String text = OCRPraser.praseText(new File(file));
+
+        BufferedImage image = ImageIO.read(new File(file));
+        Rectangle rect = new Rectangle((int)(0.7*image.getWidth()), 0, (int)(0.3*image.getWidth()), (int)(0.2*image.getHeight()));
+        String text = OCRPraser.praseText(new File(file),rect);
         System.out.println(text);
         System.out.println("Total cost: "+(System.currentTimeMillis()-start)+"ms");
     }
