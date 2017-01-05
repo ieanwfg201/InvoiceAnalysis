@@ -1,5 +1,6 @@
 package com.constantsoft.invoice.praser;
 
+import com.constantsoft.invoice.praser.util.PDFImageUtils;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
@@ -7,6 +8,7 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.multi.qrcode.QRCodeMultiReader;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -14,6 +16,11 @@ import java.util.regex.Pattern;
  * Created by walter.xu on 2016/12/12.
  */
 public class QRCodePraser {
+
+    public static String[] praseNumberAndCode(String filePath) throws Exception{
+        BufferedImage image = PDFImageUtils.getBufferedImageFromFile(new File(filePath));
+        return praseNumberAndCode(image);
+    }
 
     public static String[] praseNumberAndCode(BufferedImage image) throws Exception{
         QRCodeMultiReader reader = new QRCodeMultiReader();

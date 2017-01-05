@@ -16,7 +16,7 @@ import java.util.Arrays;
  */
 @Deprecated
 public class BillPraser {
-    protected CommonLog logger = new CommonLog(this.getClass());
+    protected CommonLog logger = new CommonLog("BillPraser");
     private static BillPraser instance = new BillPraser();
     private BillPraser(){}
 

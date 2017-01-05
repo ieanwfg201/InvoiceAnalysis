@@ -4,6 +4,10 @@ import net.sourceforge.tess4j.ITessAPI;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract1;
 import net.sourceforge.tess4j.Word;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.rendering.PDFRenderer;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.DataLine;
@@ -23,26 +27,44 @@ public class OCRTest {
     public static void main(String[] args) throws Exception{
 
 //        doOCR(args);
-        doTest();
+//        doTest();
+        testOCRInPdf();
     }
 
-    public static void doTest() throws Exception {
-        String file = "D:\\log\\pdf\\test.jpg";
-        instance = new Tesseract1(); // JNA Direct Mapping
-        instance.setLanguage("chi_sim");
+    public static void testOCRInPdf() throws Exception {
+//        String file  = "D:\\log\\pdf\\20161228180310-0001.pdf";
+        String file  = "D:\\log\\pdf\\source\\tess\\12.pdf.250.jpg";
+//        PDDocument document = PDDocument.load(new File(file));
+//        PDFRenderer renderer = new PDFRenderer(document);
+//        BufferedImage image = renderer.renderImageWithDPI(0, 300);
 
+        BufferedImage image = ImageIO.read(new File(file));
+
+        instance = new Tesseract1(); // JNA Direct Mapping
+        instance.setLanguage("eng");
+//        instance.setLanguage("chi_sim");
+//        instance.setTessVariable("tessedit_char_whitelist", "1234567890");
+        long start = System.currentTimeMillis();
+        String line = instance.doOCR(image);
+        System.out.println("Cost: "+(System.currentTimeMillis()-start));
+        System.out.println(line);
+
+    }
+
+
+    public static void doTest() throws Exception {
+        String file = "D:\\log\\pdf\\20161228180310-0001.pdf";
+        instance = new Tesseract1(); // JNA Direct Mapping
+        instance.setLanguage("eng");
+        instance.setTessVariable("tessedit_char_whitelist","1234567890");
 
         BufferedImage image = ImageIO.read(new File(file));
         List<Rectangle> datList = instance.getSegmentedRegions(image, ITessAPI.TessPageIteratorLevel.RIL_TEXTLINE);
 
         System.out.println(datList.size());
-        datList.forEach(data -> {
-            try {
-                System.out.println(instance.doOCR(image, data));
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        });
+        for(Rectangle data: datList){
+        	 System.out.println(instance.doOCR(image, data));
+        }
     }
 
     public static void doOCR(String[] args) throws Exception{

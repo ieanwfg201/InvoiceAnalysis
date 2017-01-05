@@ -1,5 +1,6 @@
 package com.constantsoft.invoice.praser.util;
 
+import com.constantsoft.invoice.praser.PdfTextPraser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
@@ -14,12 +15,19 @@ import java.util.List;
  */
 public class PDFImageUtils {
 
-    public static BufferedImage transPDFToImage(String pdfFile, int dpi){
-        if (pdfFile==null||"".equals(pdfFile)) return null;
+    public static BufferedImage getBufferedImageFromFile(File imageFile) throws Exception{
+        if (imageFile.getName().toLowerCase().endsWith("pdf"))
+            return transPDFToImage(imageFile, 300);
+        else
+            return ImageIO.read(imageFile);
+    }
+
+    public static BufferedImage transPDFToImage(File pdfFile, int dpi){
+        if (pdfFile==null) return null;
         if (dpi ==0) dpi = 200;
         PDDocument doc = null;
         try {
-            doc = PDDocument.load(new File(pdfFile));
+            doc = PDDocument.load(pdfFile);
             PDFRenderer render = new PDFRenderer(doc);
             return render.renderImageWithDPI(0, dpi);
         } catch (Exception e){
@@ -29,7 +37,7 @@ public class PDFImageUtils {
         return null;
     }
 
-    public static String transPDFToImageFilePath(String pdfFile, String targetFileName, int dpi){
+    public static String transPDFToImageFilePath(File pdfFile, String targetFileName, int dpi){
         BufferedImage image = transPDFToImage(pdfFile, dpi);
         if (image!=null)
             try{
@@ -41,11 +49,11 @@ public class PDFImageUtils {
     public static List<String> transPdfToImageOfDirectory(String filePath, String targetFilePath, int dpi){
         File directory = new File(filePath);
         if (directory.isDirectory()){
-            List<String> resList = new ArrayList<>();
+            List<String> resList = new ArrayList<String>();
             File[] subFileArray = directory.listFiles();
             for(File subFile: subFileArray){
                 if (subFile.getPath().toLowerCase().endsWith(".pdf")){
-                    String imagePath = transPDFToImageFilePath(subFile.getPath(), targetFilePath+File.separator+subFile.getName()+"."+dpi+".jpg", dpi);
+                    String imagePath = transPDFToImageFilePath(subFile, targetFilePath+File.separator+subFile.getName()+"."+dpi+".jpg", dpi);
                     if (imagePath!=null) resList.add(imagePath);
                 }
             }

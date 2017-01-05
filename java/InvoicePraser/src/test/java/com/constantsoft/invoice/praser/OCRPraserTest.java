@@ -15,24 +15,43 @@ import java.util.Arrays;
 public class OCRPraserTest {
 
     public static void main(String[] args) throws Exception {
+        System.out.println((int)'1');
+        System.out.println((int)'2');
+        System.out.println((int)'3');
+        System.out.println((int)'4');
+        System.out.println((int)'5');
+        System.out.println((int)'6');
+        System.out.println((int)'7');
+        System.out.println((int)'8');
+        System.out.println((int)'9');
+        System.out.println((int)'0');
+
+
+    }
+
+    private static void testPraseNumberAndCodeByPart() throws Exception{
         double xStart = 0.7;
         double xEnd = 1;
         double yStart = 0;
         double yEnd = 0.2;
+//        String file = "D:\\log\\pdf\\10.pdf.300.jpg";
         String file = "D:\\log\\pdf\\10.pdf.300.jpg";
         long start = System.currentTimeMillis();
-        System.out.println(Arrays.toString(OCRPraser.praseNumberAndCodeByPart(new File(file),xStart,yStart,xEnd,yEnd)));
+        System.out.println(Arrays.toString(OCRPraser.instance(null).praseNumberAndCodeByPart(new File(file),xStart,yStart,xEnd,yEnd)));
         System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
         start = System.currentTimeMillis();
-        System.out.println(Arrays.toString(OCRPraser.praseNumberAndCodeByPart(new File(file), xStart, yStart, xEnd, yEnd)));
+        System.out.println(Arrays.toString(OCRPraser.instance(null).praseNumberAndCodeByPart(new File(file), xStart, yStart, xEnd, yEnd)));
         System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
         start = System.currentTimeMillis();
-//        String text = OCRPraser.praseText(new File(file));
+    }
 
+    private static void testPrintImageText(String file) throws Exception{
         BufferedImage image = ImageIO.read(new File(file));
+        long start = System.currentTimeMillis();
         Rectangle rect = new Rectangle((int)(0.7*image.getWidth()), 0, (int)(0.3*image.getWidth()), (int)(0.2*image.getHeight()));
-        String text = OCRPraser.praseText(new File(file),rect);
+        String text = OCRPraser.instance(null).praseText(new File(file),rect);
         System.out.println(text);
         System.out.println("Total cost: "+(System.currentTimeMillis()-start)+"ms");
     }
+
 }

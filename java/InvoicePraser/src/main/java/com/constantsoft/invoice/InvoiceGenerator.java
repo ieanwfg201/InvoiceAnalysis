@@ -17,12 +17,37 @@ import java.util.Arrays;
  * @author walter.xu
  */
 public class InvoiceGenerator {
-    protected CommonLog logger = new CommonLog(this.getClass());
+    protected CommonLog logger = new CommonLog("InvoiceGenerator");
     private static InvoiceGenerator generator = new InvoiceGenerator();
+    private static String tessDataPath = "";
     private InvoiceGenerator(){}
-    public static InvoiceGenerator instance(){
+    public static InvoiceGenerator instance(String path){
+    	if(tessDataPath!=null&&!"".equals(tessDataPath)) InvoiceGenerator.tessDataPath = path;
         return generator;
     }
+    
+    public String getTessDataPath(){
+    	return tessDataPath;
+    }
+
+    public String[] generateInvoiceCodeAndNumber(String filePath, boolean pdf, boolean qrcode, boolean ocr, double xStartPic, double yStartPic, double xEndPic, double yEndPic){
+        if (isPdf(filePath)){
+            if (!qrcode&&!ocr) pdf = true;
+        }else{
+            if (!qrcode) ocr = true;
+        }
+        String[] codeAndNumberArray = null;
+        try {
+            if (pdf) codeAndNumberArray = PdfTextPraser.praseNumberAndCode(new File(filePath));
+            else if (ocr) codeAndNumberArray = OCRPraser.instance(tessDataPath).praseNumberAndCodeByPart(new File(filePath),xStartPic,yStartPic,xEndPic,yEndPic);
+            else codeAndNumberArray = QRCodePraser.praseNumberAndCode(filePath);
+        } catch (Exception e){
+            logger.error("Error to prase file: "+filePath+", error="+e.getMessage());
+        }
+        return isCodeAndNumberValid(codeAndNumberArray)?codeAndNumberArray:new String[]{"-","-"};
+    }
+
+
     public String[] generateInvoiceCodeAndNumber(String filePath, boolean loadFromPdfText, boolean loadFromQrcode, boolean loadFromOCR){
         if (filePath == null||"".equals(filePath.trim())) return new String[]{"-","-"};
         if (!loadFromPdfText&&!loadFromQrcode&&!loadFromOCR)
@@ -31,7 +56,7 @@ public class InvoiceGenerator {
         try {
             if (loadFromPdfText) codeAndNumberArray = PdfTextPraser.praseNumberAndCode(new File(filePath));
             if (!isCodeAndNumberValid(codeAndNumberArray)&&loadFromQrcode) codeAndNumberArray = QRCodePraser.praseNumberAndCode(ImageIO.read(new File(filePath)));
-            if (!isCodeAndNumberValid(codeAndNumberArray)&&loadFromOCR) codeAndNumberArray = OCRPraser.praseNumberAndCode(new File(filePath));
+            if (!isCodeAndNumberValid(codeAndNumberArray)&&loadFromOCR) codeAndNumberArray = OCRPraser.instance(tessDataPath).praseNumberAndCode(new File(filePath));
         } catch (Exception e){
             logger.error("Error to prase file: "+filePath+", error="+e.getMessage());
         }

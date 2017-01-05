@@ -1,6 +1,7 @@
 package com.constantsoft.invoice.praser;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.awt.image.BufferedImage;
@@ -57,6 +58,20 @@ public class PdfTextPraser {
                     break;
             }
             if (endIndex > startIndex) return line.substring(startIndex,endIndex);
+        }
+        return null;
+    }
+
+    public static BufferedImage prasePdfToImage(File file, int dpi) throws Exception{
+        if (dpi==0) dpi = 300;
+        PDDocument document = null;
+        try {
+            document = PDDocument.load(file);
+            PDFRenderer renderer = new PDFRenderer(document);
+            // only return the first page.
+            if (document.getNumberOfPages()>0) return renderer.renderImageWithDPI(0, dpi);
+        }finally {
+            if (document!=null) document.close();
         }
         return null;
     }

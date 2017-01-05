@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Class-Path: javase-3.3.0.jar fontbox-2.0.0.jar classmate-1.3.3.jar slf
+ 4j-api-1.7.21.jar commons-beanutils-1.9.3.jar commons-logging-1.2.jar
+  ghost4j-1.0.1.jar tomcat-embed-el-8.5.6.jar spring-web-4.3.4.RELEASE
+ .jar pdfbox-2.0.0.jar logback-core-1.1.7.jar jna-4.2.2.jar spring-aop
+ -4.3.4.RELEASE.jar itext-2.1.7.jar tomcat-embed-core-8.5.6.jar logbac
+ k-classic-1.1.7.jar tomcat-embed-websocket-8.5.6.jar jackson-core-2.8
+ .4.jar commons-io-2.5.jar validation-api-1.1.0.Final.jar spring-boot-
+ starter-tomcat-1.4.2.RELEASE.jar jul-to-slf4j-1.7.21.jar spring-expre
+ ssion-4.3.4.RELEASE.jar jboss-logging-3.3.0.Final.jar asm-3.3.1.jar x
+ mlgraphics-commons-1.4.jar jackson-databind-2.8.4.jar snakeyaml-1.17.
+ jar jai-imageio-core-1.3.1.jar jackson-annotations-2.8.4.jar hibernat
+ e-validator-5.2.4.Final.jar jcommander-1.48.jar spring-beans-4.3.4.RE
+ LEASE.jar spring-boot-autoconfigure-1.4.2.RELEASE.jar tess4j-3.2.1.ja
+ r core-3.3.0.jar jcl-over-slf4j-1.7.21.jar spring-core-4.3.4.RELEASE.
+ jar rococoa-core-0.5.jar spring-boot-starter-web-1.4.2.RELEASE.jar sp
+ ring-boot-starter-1.4.2.RELEASE.jar cglib-2.2.2.jar spring-boot-1.4.2
+ .RELEASE.jar commons-collections-3.2.2.jar spring-webmvc-4.3.4.RELEAS
+ E.jar spring-context-4.3.4.RELEASE.jar log4j-1.2.17.jar spring-boot-s
+ tarter-logging-1.4.2.RELEASE.jar lept4j-1.2.3.jar log4j-over-slf4j-1.
+ 7.21.jar
+Main-Class: com.constantsoft.invoice.Application
+
