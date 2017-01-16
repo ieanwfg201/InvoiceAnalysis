@@ -3,7 +3,9 @@ package com.constantsoft.invoice.praser;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.concurrent.*;
 
+import com.lowagie.text.pdf.PdfImage;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 
@@ -15,7 +17,7 @@ import com.constantsoft.invoice.praser.util.PDFImageUtils;
  */
 public class OCRPraser {
 //    private static final String INVOICE_LIMIT_CHARS = "1234567890.：:-普通发票发票代码发票号码开票日期检验码年月日机器编号密码区购买方名称纳税人识别码地址电话开户行及账号合计货物或应税劳务服务名称规格型号单位数量单价金额税率税额税额合计（）大壹贰叁肆伍陆柒捌玖拾佰仟万亿小写销售方备注收款人符合开票人";
-
+    // not thread-safe
     private static ITesseract instance;
     
     private static OCRPraser praser;
@@ -65,15 +67,21 @@ public class OCRPraser {
 
 
 
-    public String[] praseNumberAndCodeByPart(File imageFile, double xStart, double yStart, double xEnd, double yEnd) throws Exception{
+    public String[] praseNumberAndCodeByPart(File imageFile, double xStart, double yStart, double xEnd, double yEnd, boolean isRatate) throws Exception{
+        BufferedImage image = PDFImageUtils.getBufferedImageFromFile(imageFile);
+        if (isRatate) return praseNumberAndCodeByPartWithRatate(image,xStart,yStart,xEnd,yEnd);
+        return praseNumberAndCodeByPart(image,xStart,yStart,xEnd,yEnd);
+    }
+
+    public String[] praseNumberAndCodeByPart(BufferedImage image, double xStart, double yStart, double xEnd, double yEnd) throws Exception {
         if (xStart<0||xStart>1) xStart = 0;
         if (yStart<0||yStart>1) yStart = 0;
         if (xEnd<=xStart||xEnd>1) xEnd = 1;
         if (yEnd<=yStart||yEnd>1) yEnd = 1;
-        BufferedImage image = PDFImageUtils.getBufferedImageFromFile(imageFile);
         Rectangle rect = new Rectangle((int)(xStart*image.getWidth()), (int)(yStart*image.getHeight()),
                 (int)((xEnd-xStart)*image.getWidth()), (int)((yEnd-yStart)*image.getHeight()));
-        String text = praseText(imageFile, rect);
+//        String text = praseText(image, rect);
+        String text = instance.doOCR(image, rect);
         String[] billCodeAndNumberArray = new String[]{"-","-"};
         String[] itemArray = text.split("\n");
         for(String item: itemArray){
@@ -89,8 +97,26 @@ public class OCRPraser {
         }
         return billCodeAndNumberArray;
     }
-
-
-
+    public String[] praseNumberAndCodeByPartWithRatate(BufferedImage image, final double xStart, final double yStart, final double xEnd, final double yEnd) throws Exception {
+        String[] result = this.praseNumberAndCodeByPart(image, xStart, yStart, xEnd, yEnd);
+        if (isCodeAndNumberValid(result)) return result;
+        // ratate 90 angle
+        image = PDFImageUtils.ratate(image, 90);
+        result = this.praseNumberAndCodeByPart(image, xStart, yStart, xEnd, yEnd);
+        if (isCodeAndNumberValid(result)) return result;
+        // ratate 90 angle
+        image = PDFImageUtils.ratate(image, 90);
+        result = this.praseNumberAndCodeByPart(image, xStart, yStart, xEnd, yEnd);
+        if (isCodeAndNumberValid(result)) return result;
+        // ratate 90 angle
+        image = PDFImageUtils.ratate(image, 90);
+        result = this.praseNumberAndCodeByPart(image, xStart, yStart, xEnd, yEnd);
+        if (isCodeAndNumberValid(result)) return result;
+        // 如果360度旋转后依然无法获取到代码信息，则表示无法获取到
+        return new String[]{"-","-"};
+    }
+    private boolean isCodeAndNumberValid(String[] codeAndNumberArray){
+        return codeAndNumberArray!=null&&codeAndNumberArray.length==2&&!"-".equals(codeAndNumberArray[0])&&!"-".equals(codeAndNumberArray[1]);
+    }
 
 }

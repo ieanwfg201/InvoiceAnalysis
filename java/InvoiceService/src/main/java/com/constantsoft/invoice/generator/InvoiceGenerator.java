@@ -31,7 +31,7 @@ public class InvoiceGenerator {
     	return tessDataPath;
     }
 
-    public String[] generateInvoiceCodeAndNumber(String filePath, boolean pdf, boolean qrcode, boolean ocr, double xStartPic, double yStartPic, double xEndPic, double yEndPic){
+    public String[] generateInvoiceCodeAndNumber(String filePath, boolean pdf, boolean qrcode, boolean ocr, double xStartPic, double yStartPic, double xEndPic, double yEndPic, boolean isRatate){
         if (isPdf(filePath)){
             if (!qrcode&&!ocr) pdf = true;
         }else{
@@ -40,7 +40,7 @@ public class InvoiceGenerator {
         String[] codeAndNumberArray = null;
         try {
             if (pdf) codeAndNumberArray = PdfTextPraser.praseNumberAndCode(new File(filePath));
-            else if (ocr) codeAndNumberArray = OCRPraser.instance(tessDataPath).praseNumberAndCodeByPart(new File(filePath),xStartPic,yStartPic,xEndPic,yEndPic);
+            else if (ocr) codeAndNumberArray = OCRPraser.instance(tessDataPath).praseNumberAndCodeByPart(new File(filePath),xStartPic,yStartPic,xEndPic,yEndPic,isRatate);
             else codeAndNumberArray = QRCodePraser.praseNumberAndCode(filePath);
         } catch (Exception e){
             logger.error("Error to prase file: "+filePath+", error="+e.getMessage());

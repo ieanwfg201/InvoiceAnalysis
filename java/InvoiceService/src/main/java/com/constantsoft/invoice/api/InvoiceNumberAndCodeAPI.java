@@ -17,7 +17,7 @@ public class InvoiceNumberAndCodeAPI {
 
     @RequestMapping("/invoice/code/number")
     public InvoiceCodeAndNumberResponseVO queryInvoice(String filePath, Boolean pdf, Boolean qrcode, Boolean ocr,
-                                                       Double xStart, Double yStart, Double xEnd, Double yEnd){
+                                                       Double xStart, Double yStart, Double xEnd, Double yEnd, Boolean isRatate){
         if (filePath==null||filePath.trim().equals("")) return new InvoiceCodeAndNumberResponseVO(CODE_PARAMETER_ERROR, "file path is null");
         if (pdf==null) pdf =false;
         if (qrcode==null) qrcode =false;
@@ -26,9 +26,10 @@ public class InvoiceNumberAndCodeAPI {
         if (yStart == null) yStart = 0.0;
         if (xEnd == null) xEnd = 0.0;
         if (yEnd == null) yEnd = 0.0;
+        if (isRatate == null) isRatate = false;
         InvoiceCodeAndNumberResponseVO res = new InvoiceCodeAndNumberResponseVO();
         try {
-            String[] arrays = InvoiceGenerator.instance(Application.getDataPath()).generateInvoiceCodeAndNumber(filePath,pdf,qrcode,ocr,xStart,yStart,xEnd,yEnd);
+            String[] arrays = InvoiceGenerator.instance(Application.getDataPath()).generateInvoiceCodeAndNumber(filePath,pdf,qrcode,ocr,xStart,yStart,xEnd,yEnd,isRatate);
             if (arrays!=null&&arrays.length==2){
                 res.setInvoiceCode(arrays[0]);
                 res.setInvoiceNumber(arrays[1]);

@@ -1,6 +1,8 @@
 package com.constantsoft.invoice.praser;
 
 
+import com.constantsoft.invoice.praser.util.PDFImageUtils;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -26,7 +28,7 @@ public class OCRPraserTest {
         System.out.println((int)'9');
         System.out.println((int)'0');
 
-
+        testPraseNumberAndCodeByPartWithRatate();
     }
 
     private static void testPraseNumberAndCodeByPart() throws Exception{
@@ -36,11 +38,12 @@ public class OCRPraserTest {
         double yEnd = 0.2;
 //        String file = "D:\\log\\pdf\\10.pdf.300.jpg";
         String file = "D:\\log\\pdf\\10.pdf.300.jpg";
+        BufferedImage image = PDFImageUtils.getBufferedImageFromFile(new File(file));
         long start = System.currentTimeMillis();
-        System.out.println(Arrays.toString(OCRPraser.instance(null).praseNumberAndCodeByPart(new File(file),xStart,yStart,xEnd,yEnd)));
+        System.out.println(Arrays.toString(OCRPraser.instance(null).praseNumberAndCodeByPart(image,xStart,yStart,xEnd,yEnd)));
         System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
         start = System.currentTimeMillis();
-        System.out.println(Arrays.toString(OCRPraser.instance(null).praseNumberAndCodeByPart(new File(file), xStart, yStart, xEnd, yEnd)));
+        System.out.println(Arrays.toString(OCRPraser.instance(null).praseNumberAndCodeByPart(image, xStart, yStart, xEnd, yEnd)));
         System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
         start = System.currentTimeMillis();
     }
@@ -54,4 +57,35 @@ public class OCRPraserTest {
         System.out.println("Total cost: "+(System.currentTimeMillis()-start)+"ms");
     }
 
+    public static void testPraseNumberAndCodeByPartWithRatate() throws Exception {
+        String path = "D:\\log\\pdf\\20161228180508-0001.pdf";
+        double xStart = 0.7;
+        double xEnd = 1;
+        double yStart = 0;
+        double yEnd = 0.2;
+        long start = System.currentTimeMillis();
+        BufferedImage image = PDFImageUtils.getBufferedImageFromFile(new File(path));
+        System.out.println(Arrays.toString(OCRPraser.instance("D:\\log\\ocr\\tessData").praseNumberAndCodeByPartWithRatate(image, xStart, yStart,xEnd,yEnd)));
+        System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
+
+//        BufferedImage image = PDFImageUtils.getBufferedImageFromFile(new File(path));
+//        long start = System.currentTimeMillis();
+//        System.out.println(Arrays.toString(OCRPraser.instance("D:\\log\\ocr\\tessData").praseNumberAndCodeByPart(image,xStart,yStart,xEnd,yEnd)));
+//        System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
+//
+//        image = PDFImageUtils.ratate(image, 90);
+//        start = System.currentTimeMillis();
+//        System.out.println(Arrays.toString(OCRPraser.instance("D:\\log\\ocr\\tessData").praseNumberAndCodeByPart(image,xStart,yStart,xEnd,yEnd)));
+//        System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
+//
+//        image = PDFImageUtils.ratate(image, 90);
+//        start = System.currentTimeMillis();
+//        System.out.println(Arrays.toString(OCRPraser.instance("D:\\log\\ocr\\tessData").praseNumberAndCodeByPart(image,xStart,yStart,xEnd,yEnd)));
+//        System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
+//
+//        image = PDFImageUtils.ratate(image, 90);
+//        start = System.currentTimeMillis();
+//        System.out.println(Arrays.toString(OCRPraser.instance("D:\\log\\ocr\\tessData").praseNumberAndCodeByPart(image,xStart,yStart,xEnd,yEnd)));
+//        System.out.println("Cost time = "+(System.currentTimeMillis()-start)+"ms");
+    }
 }
