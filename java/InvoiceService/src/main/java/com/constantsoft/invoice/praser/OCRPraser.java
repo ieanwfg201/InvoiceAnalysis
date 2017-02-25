@@ -37,15 +37,6 @@ public class OCRPraser {
 		}
     	return praser;
     }
-    
-    /*private static class OCRPraserHolder{
-        private static ITesseract instance = new Tesseract1();
-        static {
-//            instance.setLanguage("chi_sim");
-            instance.setLanguage("eng");
-//            instance.setTessVariable("tessedit_char_whitelist", INVOICE_LIMIT_CHARS);
-        }
-    }*/
 
     public String praseText(File imageFile) throws Exception {
         return instance.doOCR(imageFile);

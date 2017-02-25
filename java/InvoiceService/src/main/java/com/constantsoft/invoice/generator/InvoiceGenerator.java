@@ -39,7 +39,7 @@ public class InvoiceGenerator {
         }
         String[] codeAndNumberArray = null;
         try {
-            if (pdf) codeAndNumberArray = PdfTextPraser.praseNumberAndCode(new File(filePath));
+            if (pdf) codeAndNumberArray = PdfTextPraser.praseNumberAndCode(new File(filePath), false);
             else if (ocr) codeAndNumberArray = OCRPraser.instance(tessDataPath).praseNumberAndCodeByPart(new File(filePath),xStartPic,yStartPic,xEndPic,yEndPic,isRatate);
             else codeAndNumberArray = QRCodePraser.praseNumberAndCode(filePath);
         } catch (Exception e){
@@ -55,7 +55,7 @@ public class InvoiceGenerator {
             return generateInvoiceCodeAndNumberValidateByPdfAndQrcode(filePath);
         String[] codeAndNumberArray = null;
         try {
-            if (loadFromPdfText) codeAndNumberArray = PdfTextPraser.praseNumberAndCode(new File(filePath));
+            if (loadFromPdfText) codeAndNumberArray = PdfTextPraser.praseNumberAndCode(new File(filePath), false);
             if (!isCodeAndNumberValid(codeAndNumberArray)&&loadFromQrcode) codeAndNumberArray = QRCodePraser.praseNumberAndCode(ImageIO.read(new File(filePath)));
             if (!isCodeAndNumberValid(codeAndNumberArray)&&loadFromOCR) codeAndNumberArray = OCRPraser.instance(tessDataPath).praseNumberAndCode(new File(filePath));
         } catch (Exception e){
@@ -70,7 +70,7 @@ public class InvoiceGenerator {
             if (isImage(filePath)) return QRCodePraser.praseNumberAndCode(ImageIO.read(new File(filePath)));
             if (isPdf(filePath)){
                 doc = PDDocument.load(new File(filePath));
-                String[] codeAndNumberArrayFromPdfText = PdfTextPraser.praseNumberAndCode(doc);
+                String[] codeAndNumberArrayFromPdfText = PdfTextPraser.praseNumberAndCode(doc, null, false);
 
                 PDFRenderer render = new PDFRenderer(doc);
                 BufferedImage image = render.renderImageWithDPI(doc.getNumberOfPages() - 1, 200);

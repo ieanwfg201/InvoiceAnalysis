@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice Analysis</title>
+    <script src="./js/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+    String.prototype.endWith=function(endStr){
+        var d=this.length-endStr.length;
+        return (d>=0&&this.lastIndexOf(endStr)==d)
+    }
+    function pdfQuery(){
+
+        var pdfPath = document.getElementById("pdfFile").value;
+        if(pdfPath ==null||pdfPath==''){
+            alert("Please select a PDF file first.");
+            return;
+        }
+        if(!pdfPath.toLowerCase().endWith('pdf')){
+            alert("Target file is not a valid PDF file, Please re-select.");
+            return;
+        }
+        var formData = new FormData($( "#pdfFileUpload" )[0]);
+
+        /*$('#pdfFileUpload').submit(function() {
+            $(this).ajaxSubmit(function(data) {
+                alert(data);
+            });
+            return false;
+        });*/
+
+                $.ajax({
+                    url: '/api/invoice/pdf/analysis' ,
+                    type: 'POST',
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (returndata) {
+                        if(returndata.resultCode==0){
+                            alert("Analysis success.");
+                            $("#pdfCode").val(returndata.invoiceCode);
+                            $("#pdfNumber").val(returndata.invoiceNumber);
+                        }else{
+                            alert("error:"+returndata.errorMessage)
+                            $("#pdfCode").val(returndata.invoiceCode);
+                            $("#pdfNumber").val(returndata.invoiceNumber);
+                        }
+
+                        return false;
+                    }
+                });
+        return true;
+    }
+
+</script>
+
+<hr />
+<div style="width: 80%;margin: 0 auto;">
+    <p style="font-size: medium; font-weight: bold">PDF Invoice validate: </p><br>
+    <form id="pdfFileUpload" name="pdfFileUpload" enctype="multipart/form-data" >
+        <table>
+            <tr>
+                <td>Target PDF file:</td>
+                <td><input id="pdfFile" name="pdfFile" type="file"  /><input id="pdfSubmit" type="button" value="submit" onclick="pdfQuery()" /></td>
+            </tr>
+            <tr></tr>
+            <tr><td>
+                Check Signature?
+            </td><td><input id ="checkSign" name="checkSign" type="checkbox" checked/></td></tr>
+            <tr>
+                <td></td>
+                <td><input id="pdfError" name="pdfError" readonly hidden /></td>
+            </tr>
+            <tr>
+                <td>Code：</td>
+                <td><input id="pdfCode" name="pdfCode" readonly /></td>
+            </tr>
+            <tr>
+                <td>Number：</td>
+                <td><input id="pdfNumber" name="pdfNumber" readonly /></td>
+            </tr>
+        </table>
+    </form>
+
+</div>
+
+</body>
+</html>

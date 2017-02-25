@@ -1,166 +1,123 @@
-package com.constantsoft.invoice.praser;
+package com.constantsoft.invoice.service.impl;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
+import com.constantsoft.invoice.service.IInvoiceAnalysisService;
+import com.constantsoft.invoice.service.bean.InvoiceInformationEntity;
+import com.constantsoft.invoice.service.util.PDFInvoiceInforGenerateFactory;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.*;
-import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.Store;
 import org.bouncycastle.util.StoreException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import sun.security.x509.X509CertImpl;
 
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
- * Created by walter.xu on 2016/12/12.
+ * Created by Walter on 2017/2/18.
  */
-public class PdfTextPraser {
-    public static String[] praseNumberAndCode(File file, boolean checkingSignature) throws Exception{
-        String[] billCodeAndNumberArray = new String[]{"-","-"};
-        if (file==null||!file.exists()||file.isDirectory()) return billCodeAndNumberArray;
-        PDDocument doc = null;
-        InputStream is = null;
-        try {
-            is = new FileInputStream(file);
-            doc = PDDocument.load(file);
-            billCodeAndNumberArray = praseNumberAndCode(doc, is, checkingSignature);
-        } finally {
-            if (doc!=null) doc.close();
-            if (is!=null) is.close();
-        }
-        return billCodeAndNumberArray;
+@Component
+public class PDFInvoiceAnalysisService implements IInvoiceAnalysisService {
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Override
+    public InvoiceInformationEntity generate(File file)throws Exception {
+        return generate(file, false);
     }
-    public static String[] praseNumberAndCode(byte[] bytes, boolean checkingSignature) throws Exception{
-        String[] billCodeAndNumberArray = new String[]{"-","-"};
-        if (bytes==null) return billCodeAndNumberArray;
+
+    @Override
+    public InvoiceInformationEntity generate(File file, boolean checkingSignature) throws Exception{
+        byte[] bytes = null;
+        try {
+            bytes = Files.readAllBytes(file.toPath());
+        }catch (Exception e){}
+
+        return generate(bytes, checkingSignature); // TODO
+    }
+
+    @Override
+    public InvoiceInformationEntity generate(byte[] bytes)throws Exception {
+        return generate(bytes, false);
+    }
+
+    @Override
+    public InvoiceInformationEntity generate(byte[] bytes, boolean checkingSignature) throws Exception{
+        InvoiceInformationEntity entity = new InvoiceInformationEntity();
+        PDFInvoiceInforGenerateFactory factory = new PDFInvoiceInforGenerateFactory();
         PDDocument doc = null;
+        String text = null;
         try {
             doc = PDDocument.load(bytes);
-            InputStream is = new ByteArrayInputStream(bytes);
-            billCodeAndNumberArray = praseNumberAndCode(doc, is, checkingSignature);
-        } finally {
-            if (doc!=null) doc.close();
-        }
-        return billCodeAndNumberArray;
-    }
-
-
-
-    public static String[] praseNumberAndCode(PDDocument doc, InputStream file,  boolean checkSignature) throws Exception{
-        if (doc == null) return null;
-        String[] billCodeAndNumberArray = new String[]{"-","-"};
-        PDFTextStripper stripper = new PDFTextStripper();
-        stripper.setSortByPosition(true);
-        String text = stripper.getText(doc);
-
-
-        String date = null;
-
-        String[] itemArray = text.split("\r\n");
-        for(String item: itemArray){
-            item = item.trim();
-            String code = findNextStringByPattern(item, "发票代码", -1, null);
-            if (code!=null&&!"".equals(code)) billCodeAndNumberArray[0] = code;
-            String number = findNextStringByPattern(item, "发票号码", -1, null);
-            if (number!=null&&!"".equals(number)) billCodeAndNumberArray[1] = number;
-            // 日期
-            if (date==null&&item.contains("日期")){
-                String dateInfo = item.substring(item.indexOf("日期")+2);
-                date = dateInfo.replaceAll(":","").replaceAll("：", "").replaceAll("年","")
-                        .replaceAll("月", "").replaceAll("日", "");
+            PDFTextStripper stripper = new PDFTextStripper();
+            stripper.setSortByPosition(true);
+            text = stripper.getText(doc);
+            String[] itemArray = text.split("\r\n");
+            for(String item: itemArray){
+                factory.executeLine(item);
             }
-        }
-        // 是否需要校验签名
-        if (checkSignature) checkingSignaure(doc, file, text, date);
-        return billCodeAndNumberArray;
-    }
+            entity = factory.getInvoiceInfoEntity();
 
-
-    protected static String findNextStringByPattern(String line, String prefix, int maxNextChars, String availableChars){
-        if (availableChars == null||"".equals(availableChars.trim())) availableChars = "1234567890";
-        if (maxNextChars < 0) maxNextChars = 5;
-        if (line ==null ||prefix == null) return null;
-        int startIndex = line.indexOf(prefix);
-        if (startIndex>=0){
-            int endIndex = 0;
-            startIndex += prefix.length();
-            for(int index = startIndex+1; index < line.length(); index++){
-                if (endIndex==0&&availableChars.contains(String.valueOf(line.charAt(index)))){
-                    startIndex = index; endIndex = index+1;
-                }else if (availableChars.contains(String.valueOf(line.charAt(index)))){
-                    endIndex = index+1;
-                }else if (endIndex!=0)
-                    break;
-            }
-            if (endIndex > startIndex) return line.substring(startIndex,endIndex);
-        }
-        return null;
-    }
-
-    public static BufferedImage prasePdfToImage(File file, int dpi) throws Exception{
-        if (dpi==0) dpi = 300;
-        PDDocument document = null;
-        try {
-            document = PDDocument.load(file);
-            PDFRenderer renderer = new PDFRenderer(document);
-            // only return the first page.
-            if (document.getNumberOfPages()>0) return renderer.renderImageWithDPI(0, dpi);
+        } catch (Exception e){
+            logger.error("Error loading PDF files. ", e);
+            throw new RuntimeException("Error loading PDF files");
         }finally {
-            if (document!=null) document.close();
+            if (doc!=null) try{ doc.close();}catch (Exception e){}
         }
-        return null;
+
+        if (checkingSignature&&text!=null&&bytes!=null){
+            ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+            checkingSignaure(doc, bis, text, entity);
+        }
+        return entity;
     }
 
-    private static void checkingSignaure(PDDocument doc, InputStream infile, String text, String date) throws Exception{
-        // 1 当前文档不能被更改
-//        if (doc.getCurrentAccessPermission().canModify()) throw new Exception("Current pdf document could not modification");
-        List<PDSignature> signList = doc.getSignatureDictionaries();
-        // 2 证书不能为空
-        if (signList==null||signList.size()==0) throw new Exception("No signature found for current pdf document");
-        // 3 校验时间
+    private void checkingSignaure(PDDocument doc, InputStream infile, String text, InvoiceInformationEntity entity) throws Exception{
 
+        List<PDSignature> signList = doc.getSignatureDictionaries();
+        // 1 证书不能为空
+        if (signList==null||signList.size()==0) throw new Exception("No signature found for current pdf document");
+        // 2 校验时间
+        Date signDate = null;
         boolean checkTrue = false;
         for (PDSignature sig : signList) {
-            if (!date.contains(new SimpleDateFormat("yyyyMMdd").format(sig.getSignDate().getTime())))
-                throw new Exception("Cannot modify pdf file: signature date is not match");
+
             COSDictionary sigDict = sig.getCOSObject();
             COSString contents = (COSString) sigDict.getDictionaryObject(COSName.CONTENTS);
-
             // download the signed content
             byte[] buf = null;
-            try
-            {
+            try{
                 buf = sig.getSignedContent(infile);
-            }
-            finally
-            {
+            }finally{
                 infile.close();
             }
-
             String subFilter = sig.getSubFilter();
             if (subFilter != null)
             {
                 if (subFilter.equals("adbe.pkcs7.detached"))
                 {
                     String certInfos = verifyPKCS7(buf, contents, sig);
-                    checkTrue = validatePdfInfos(text, certInfos);
+                    checkTrue = validatePdfInfos(text, certInfos, entity.getCompanyName());
                     //TODO check certificate chain, revocation lists, timestamp...
                 }
                 else if (subFilter.equals("adbe.pkcs7.sha1"))
@@ -176,7 +133,7 @@ public class PdfTextPraser {
 
                     byte[] hash = MessageDigest.getInstance("SHA1").digest(buf);
                     String certInfos = verifyPKCS7(hash, contents, sig);
-                    checkTrue = validatePdfInfos(text, certInfos);
+                    checkTrue = validatePdfInfos(text, certInfos, entity.getCompanyName());
                     //TODO check certificate chain, revocation lists, timestamp...
                 }
                 else if (subFilter.equals("adbe.x509.rsa_sha1"))
@@ -189,7 +146,10 @@ public class PdfTextPraser {
                     ByteArrayInputStream certStream = new ByteArrayInputStream(certData);
                     Collection<? extends Certificate> certs = factory.generateCertificates(certStream);
 //                    System.out.println("certs=" + certs);
-
+                    for(Certificate cert: certs){
+                        checkTrue = validatePdfInfos(text, cert.toString(), entity.getCompanyName());
+                        if (checkTrue) break;
+                    }
                     //TODO verify signature, do other function to check.
                 }
                 else
@@ -205,23 +165,43 @@ public class PdfTextPraser {
                 throw new IOException("Missing subfiler for cert dictionary");
             }
 
-            if (checkTrue) break;
+            if (checkTrue){ signDate=sig.getSignDate().getTime(); break;}
         }
         if (!checkTrue) throw new Exception("Signaure validation failed.");
-
+        // 当为合法文档时候
+        // 3 当前文档不能被更改, 通过文档证书时间以及entity的发票时间校验，校验到天
+        if (!isSameDay(entity.getInvoiceDate(), signDate))
+            throw new Exception("Invoice date not equal with signature.["+entity.getInvoiceDate()+", "+signDate+"]");
     }
 
-    private static boolean validatePdfInfos(String text, String certInfos){
+    private boolean isSameDay(Date day1, Date day2){
+        if (day1==null||day2==null) return false;
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(day1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(day2);
+        return cal1.get(Calendar.YEAR)==cal2.get(Calendar.YEAR)&&
+                cal1.get(Calendar.MONTH)==cal2.get(Calendar.MONTH)&&
+                cal1.get(Calendar.DAY_OF_MONTH)==cal2.get(Calendar.DAY_OF_MONTH);
+    }
+    // 校验参数
+    private static boolean validatePdfInfos(String text, String certInfos, String companyName){
         if (certInfos==null||"".equals(certInfos)) return false;
+        boolean checkCompanyName = false;
+        if (companyName!=null&&!"".equals(companyName)){
+            checkCompanyName = certInfos.contains(companyName);
+        }
+        boolean checkSignName = false;
         // 获取cn
         String[] arrays = certInfos.toLowerCase().split(",");
-        String companyName = null;
         for(String keyValue: arrays){
-            if (keyValue.trim().startsWith("cn"))
-                companyName = keyValue.trim().substring(keyValue.trim().indexOf("=") + 1);
+            if (keyValue.trim().startsWith("o=")){
+                checkSignName = text.contains(keyValue.trim().substring(2));
+            }else if (keyValue.trim().startsWith("ou=")||keyValue.trim().startsWith("cn="))
+                checkSignName = text.contains(keyValue.trim().substring(3));
+            if (checkSignName) break;
         }
-        if (companyName==null||!text.contains(companyName)) return false;
-        return true;
+        return checkCompanyName||checkSignName;
     }
 
     /**
@@ -252,11 +232,12 @@ public class PdfTextPraser {
 //        System.out.println("certFromSignedData: " + certFromSignedData);
         certFromSignedData.checkValidity(sig.getSignDate().getTime());
 
-        if (!signerInformation.verify(new JcaSimpleSignerInfoVerifierBuilder().build(certFromSignedData)))
+        // no need verify signature data, forbid SHA256 not exist error
+        /*if (!signerInformation.verify(new JcaSimpleSignerInfoVerifierBuilder().build(certFromSignedData)))
         {
 //            System.out.println("Signature verified");
             throw new Exception("Signature verified failed");
-        }
+        }*/
         return ((X509CertImpl)certFromSignedData).getSubjectDN().getName();
     }
 }
