@@ -2,8 +2,6 @@ package com.constantsoft.invoice.service.util;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by Walter on 2017/2/18.
  */
@@ -52,7 +50,7 @@ public class PDFInvoiceInforGenerateFactoryTest {
     @Test
     public void testMethod(){
         PDFInvoiceInforGenerateFactory factory = new PDFInvoiceInforGenerateFactory();
-        String item = "adf sdf 1234567890";
-        System.out.println(factory.findStrByAvailableWords(item, 0,0,"1234567890"));
+        String item = "\"    机器编号:661565721381 校 验 码: 59957 20760 01303 22796\"";
+        System.out.println(factory.findStrByAvailableWords(item, 10,20,"1234567890 "));
     }
 }

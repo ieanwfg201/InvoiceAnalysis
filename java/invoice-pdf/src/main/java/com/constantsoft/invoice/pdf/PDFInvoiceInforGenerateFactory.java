@@ -1,6 +1,6 @@
-package com.constantsoft.invoice.service.util;
+package com.constantsoft.invoice.pdf;
 
-import com.constantsoft.invoice.service.bean.InvoiceInformationEntity;
+import com.constantsoft.invoice.pdf.entity.InvoiceInfosEntity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import java.util.List;
  */
 public final class PDFInvoiceInforGenerateFactory {
     private static final String CHAR_NUMBER = "1234567890";
+    private static final String CHAR_NUMBER_SPACE = "1234567890 ";
     private static final String CHAR_AMOUNT = "1234567890.";
 
     // available data
@@ -26,8 +27,8 @@ public final class PDFInvoiceInforGenerateFactory {
     private List<String> availableCampanyNameList = new ArrayList<String>();
 
 
-    public InvoiceInformationEntity getInvoiceInfoEntity() {
-        InvoiceInformationEntity entity = new InvoiceInformationEntity();
+    public InvoiceInfosEntity getInvoiceInfoEntity() {
+        InvoiceInfosEntity entity = new InvoiceInfosEntity();
         if (availableInvoiceCodeList.size() > 0) entity.setInvoiceCode(availableInvoiceCodeList.get(0));
         if (avaialbleInvoiceNumberList.size() > 0) entity.setInvoiceNumber(avaialbleInvoiceNumberList.get(0));
         entity.setInvoiceDate(availableInvoiceDate);
@@ -46,6 +47,7 @@ public final class PDFInvoiceInforGenerateFactory {
 
         executeInvoiceCodeAndNumber(item);
         executeInvoiceDate(item);
+        executeCheckingCode(item);
         executeAmount(item);
         executeCompanyName(item);
     }
@@ -93,7 +95,22 @@ public final class PDFInvoiceInforGenerateFactory {
             }
         }
     }
-
+    // 每隔 5个数字为一组，共计20个数字
+    private void executeCheckingCode(String item){
+        int startIndex = 0;
+        String itemWithNoSpace = item.replaceAll(" ","");
+        String matchItem = findStrByAvailableWords(item, startIndex, 20, CHAR_NUMBER_SPACE);
+        while (matchItem != null && !"".equals(matchItem)) {
+            matchItem = matchItem.trim();
+            // check code
+            if (matchItem.replaceAll(" ","").length()==20) {
+                if (itemWithNoSpace.contains("校验码")) availableCheckingCodeList.add(0, matchItem);
+                else availableCheckingCodeList.add(matchItem);
+            }
+            startIndex = item.indexOf(matchItem, startIndex) + matchItem.length()+1;
+            matchItem = findStrByAvailableWords(item, startIndex, 0, CHAR_NUMBER_SPACE);
+        }
+    }
     // 格式应该为xxx.xx
     private void executeAmount(String item) {
         int startIndex = 0;
@@ -149,15 +166,41 @@ public final class PDFInvoiceInforGenerateFactory {
         }
     }
 
-    public String findStrByAvailableWords(String item, int startPostion, int maxLength, String availableWords) {
+    public String findStrByAvailableWords(String item, int startPostion, String availableWords) {
         if (item == null || "".equals(item.trim()) || startPostion >= item.length()) return null;
-        int start = startPostion;
-        int end = startPostion+1;
+        int start = 0;
+        int end = startPostion;
         while (end < item.length()) {
             if (availableWords.indexOf(item.charAt(end)) < 0) {
                 end++;
                 if (start == 0) continue;
                 else break;
+            }
+            if (start == 0) start = end;
+            end++;
+        }
+        if (start==0) return null;
+        if (end == item.length()) end++;
+        return item.substring(start, end-1);
+    }
+
+    public String findStrByAvailableWords(String item, int startPostion, int minLength, String availableWords) {
+        if (item == null || "".equals(item.trim()) || startPostion >= item.length()) return null;
+        int start = 0;
+        int end = startPostion;
+        while (end < item.length()) {
+            if (availableWords.indexOf(item.charAt(end)) < 0) {
+                end++;
+                if (start==0) continue;
+                else if (minLength>0&&end-start<minLength){
+                    start = end; continue;
+                }else {break;}
+                /*if (end-start<minLength){
+                    start = end;continue;
+                }
+                else {
+                    break;
+                }*/
             }
             if (start == 0) start = end;
             end++;
