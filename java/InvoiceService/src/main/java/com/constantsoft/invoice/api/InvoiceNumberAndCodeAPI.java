@@ -61,6 +61,7 @@ public class InvoiceNumberAndCodeAPI {
             if (entity!=null&&entity.getInvoiceNumber()!=null) res.setInvoiceNumber(entity.getInvoiceNumber());
             if (entity!=null&&entity.getInvoiceCode()!=null) res.setInvoiceCode(entity.getInvoiceCode());
             res.setCheckingCode(entity.getCheckingCode());
+            res.setInvoiceDate(entity.getInvoiceDate());
         }catch (Exception e){
             res.setResultCode(CODE_SYSTEM_ERROR);
             res.setErrorMessage("Error message: "+e.getMessage());

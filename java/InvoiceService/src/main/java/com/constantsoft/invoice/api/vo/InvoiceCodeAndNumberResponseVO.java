@@ -7,6 +7,7 @@ public class InvoiceCodeAndNumberResponseVO extends ResponseVO{
     private String invoiceCode = "-";
     private String invoiceNumber = "-";
     private String checkingCode = "";
+    private String invoiceDate;
 
     public InvoiceCodeAndNumberResponseVO(){}
     public InvoiceCodeAndNumberResponseVO(int resultCode, String message) {
@@ -35,5 +36,13 @@ public class InvoiceCodeAndNumberResponseVO extends ResponseVO{
 
     public void setCheckingCode(String checkingCode) {
         this.checkingCode = checkingCode;
+    }
+
+    public String getInvoiceDate() {
+        return invoiceDate;
+    }
+
+    public void setInvoiceDate(String invoiceDate) {
+        this.invoiceDate = invoiceDate;
     }
 }
