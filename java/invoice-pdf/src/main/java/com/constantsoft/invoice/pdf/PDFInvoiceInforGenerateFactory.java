@@ -3,10 +3,7 @@ package com.constantsoft.invoice.pdf;
 import com.constantsoft.invoice.pdf.entity.InvoiceInfosEntity;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Walter on 2017/2/18.
@@ -19,7 +16,7 @@ public final class PDFInvoiceInforGenerateFactory {
     // available data
     private List<String> availableInvoiceCodeList = new ArrayList<String>();
     private List<String> avaialbleInvoiceNumberList = new ArrayList<String>();
-    private Date availableInvoiceDate;
+    private String availableInvoiceDateStr;
     private List<String> availableCheckingCodeList = new ArrayList<String>();
     private List<String> availableMachineCodeList = new ArrayList<String>();
     private List<Double> availableAmountList = new ArrayList<Double>();
@@ -31,7 +28,8 @@ public final class PDFInvoiceInforGenerateFactory {
         InvoiceInfosEntity entity = new InvoiceInfosEntity();
         if (availableInvoiceCodeList.size() > 0) entity.setInvoiceCode(availableInvoiceCodeList.get(0));
         if (avaialbleInvoiceNumberList.size() > 0) entity.setInvoiceNumber(avaialbleInvoiceNumberList.get(0));
-        entity.setInvoiceDate(availableInvoiceDate);
+
+        entity.setInvoiceDateStr(availableInvoiceDateStr);
         if (availableCheckingCodeList.size() > 0) entity.setCheckingCode(availableCheckingCodeList.get(0));
         if (availableMachineCodeList.size() > 0) entity.setMachineCode(availableMachineCodeList.get(0));
         if (availableAmountList.size()>0){
@@ -74,24 +72,27 @@ public final class PDFInvoiceInforGenerateFactory {
 
     private void executeInvoiceDate(String item) {
         // 普通增值税发票格式为: yyyy年MM月dd日
-        if (availableInvoiceDate == null && item.contains("年") && item.contains("月") && item.contains("日")) {
+        if (availableInvoiceDateStr == null && item.contains("年") && item.contains("月") && item.contains("日")) {
             item = item.replaceAll(" ", "");
             int start = item.indexOf("年");
             try {
+//                System.out.println("dateStr-old: "+item);
                 String dateStr = item.substring(start - 4, item.indexOf("日", start)).replace("年", "").replace("月", "");
+//                System.out.println("dateStr: "+dateStr);
                 if (dateStr.length() == 8) {
-                    availableInvoiceDate = new SimpleDateFormat("yyyyMMdd").parse(dateStr);
+                    try{
+                        availableInvoiceDateStr = dateStr.trim();
+                    }catch (Exception e){}
                 }
             } catch (Exception e) {
             }
-        }else if (availableInvoiceDate==null&&item.contains("开票日期")){
+        }else if (availableInvoiceDateStr==null&&item.contains("开票日期")){
             // 国家税务局发票 格式为：开票日期：yyyy-MM-dd;
             String matchItem = findStrByAvailableWords(item, item.indexOf("开票日期")+4, 0, "1234567890-");
             if (matchItem!=null&&matchItem.trim().length()==10){
-                try {
-                    availableInvoiceDate = new SimpleDateFormat("yyyy-MM-dd").parse(matchItem.trim());
+                try{
+                    availableInvoiceDateStr = matchItem.trim().replaceAll("-","");
                 }catch (Exception e){}
-
             }
         }
     }

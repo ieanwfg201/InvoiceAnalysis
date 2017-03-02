@@ -45,10 +45,12 @@
                             alert("Analysis success.");
                             $("#pdfCode").val(returndata.invoiceCode);
                             $("#pdfNumber").val(returndata.invoiceNumber);
+                            $("#checkingCode").val(returndata.checkingCode);
                         }else{
                             alert("error:"+returndata.errorMessage)
                             $("#pdfCode").val(returndata.invoiceCode);
                             $("#pdfNumber").val(returndata.invoiceNumber);
+                            $("#checkingCode").val(returndata.checkingCode);
                         }
 
                         return false;
@@ -83,6 +85,10 @@
             <tr>
                 <td>Number：</td>
                 <td><input id="pdfNumber" name="pdfNumber" readonly /></td>
+            </tr>
+            <tr>
+                <td>Checking Code：</td>
+                <td><input id="checkingCode" name="checkingCode" readonly /></td>
             </tr>
         </table>
     </form>

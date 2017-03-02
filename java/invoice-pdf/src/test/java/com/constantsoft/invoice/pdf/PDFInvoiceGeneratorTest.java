@@ -14,8 +14,8 @@ public class PDFInvoiceGeneratorTest {
 
     public static void main(String[] args) throws Exception{
         PDFInvoiceGeneratorTest test = new PDFInvoiceGeneratorTest();
-        test.testGenerate();
-//        test.testGenerateAll();
+//        test.testGenerate();
+        test.testGenerateAll();
     }
 
     public void testGenerateAll() {
@@ -55,7 +55,7 @@ public class PDFInvoiceGeneratorTest {
         else {
             str.append("InvoiceCode=").append(entity.getInvoiceCode()).append(", ");
             str.append("InvoiceNumber=").append(entity.getInvoiceNumber()).append(", ");
-            str.append("InvoiceDate=").append(entity.getInvoiceDate()).append(", ");
+            str.append("InvoiceDate=").append(entity.getInvoiceDateStr()).append(", ");
             str.append("CompanyName=").append(entity.getCompanyName()).append(", ");
             str.append("Amount=").append(entity.getAmount()).append(", ");
             str.append("CheckCode=").append(entity.getCheckingCode()).append(", ");

@@ -60,6 +60,7 @@ public class InvoiceNumberAndCodeAPI {
             InvoiceInformationEntity entity = service.generate(file.getBytes(), checkSign);
             if (entity!=null&&entity.getInvoiceNumber()!=null) res.setInvoiceNumber(entity.getInvoiceNumber());
             if (entity!=null&&entity.getInvoiceCode()!=null) res.setInvoiceCode(entity.getInvoiceCode());
+            res.setCheckingCode(entity.getCheckingCode());
         }catch (Exception e){
             res.setResultCode(CODE_SYSTEM_ERROR);
             res.setErrorMessage("Error message: "+e.getMessage());

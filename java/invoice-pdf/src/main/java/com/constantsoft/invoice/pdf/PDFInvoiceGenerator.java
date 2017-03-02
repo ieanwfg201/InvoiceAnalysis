@@ -173,18 +173,21 @@ public final class PDFInvoiceGenerator {
         if (!checkTrue) throw new PDFAnalysisException("Signaure validation failed.");
         // 当为合法文档时候
         // 3 当前文档不能被更改, 通过文档证书时间以及entity的发票时间校验，校验到天
-        if (!isSameDay(entity.getInvoiceDate(), signDate))
-            throw new PDFAnalysisException("Invoice date not equal with signature.[" + entity.getInvoiceDate() + ", " + signDate + "]");
+        if (!isSameDay(entity.getInvoiceDateStr(), signDate))
+            throw new PDFAnalysisException("Invoice date not equal with signature.[" + entity.getInvoiceDateStr() + ", " + signDate + "]");
     }
-    private boolean isSameDay(Date day1, Date day2){
-        if (day1==null||day2==null) return false;
-        Calendar cal1 = Calendar.getInstance();
-        cal1.setTime(day1);
+    private boolean isSameDay(String day1, Date day2){
+        Integer day1Int = Integer.valueOf(day1.trim());
+        if (day1Int==null||day2==null) return false;
+        boolean isSame = true;
         Calendar cal2 = Calendar.getInstance();
         cal2.setTime(day2);
-        return cal1.get(Calendar.YEAR)==cal2.get(Calendar.YEAR)&&
-                cal1.get(Calendar.MONTH)==cal2.get(Calendar.MONTH)&&
-                cal1.get(Calendar.DAY_OF_MONTH)==cal2.get(Calendar.DAY_OF_MONTH);
+        isSame = day1Int%100 == cal2.get(Calendar.DAY_OF_MONTH);
+        day1Int /= 100;
+        isSame = day1Int%100 == (cal2.get(Calendar.MONTH)+1);
+        day1Int /= 100;
+        isSame = day1Int == cal2.get(Calendar.YEAR);
+        return isSame;
     }
     // 校验参数
     private static boolean validatePdfInfos(String certInfos, InvoiceInfosEntity entity){

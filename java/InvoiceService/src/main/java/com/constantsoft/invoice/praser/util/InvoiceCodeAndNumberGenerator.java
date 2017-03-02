@@ -16,7 +16,7 @@ public class InvoiceCodeAndNumberGenerator {
             }else if (line.charAt(endIndex)>='0'&&line.charAt(endIndex)<='9'){
                 endIndex++;
             }else{
-                // 校验是否为所需的字符
+
                 if ((endIndex-startIndex == 8)&&invoiceNumber==null) invoiceNumber = line.substring(startIndex, endIndex);
                 if ((endIndex-startIndex == 12)&&invoiceCode==null) invoiceCode = line.substring(startIndex, endIndex);
                 if ((endIndex-startIndex == 10)&&invoiceCode==null) invoiceCode = line.substring(startIndex, endIndex);

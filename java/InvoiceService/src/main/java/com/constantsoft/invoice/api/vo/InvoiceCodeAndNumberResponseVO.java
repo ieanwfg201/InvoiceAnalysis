@@ -6,6 +6,7 @@ package com.constantsoft.invoice.api.vo;
 public class InvoiceCodeAndNumberResponseVO extends ResponseVO{
     private String invoiceCode = "-";
     private String invoiceNumber = "-";
+    private String checkingCode = "";
 
     public InvoiceCodeAndNumberResponseVO(){}
     public InvoiceCodeAndNumberResponseVO(int resultCode, String message) {
@@ -26,5 +27,13 @@ public class InvoiceCodeAndNumberResponseVO extends ResponseVO{
 
     public void setInvoiceNumber(String invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
+    }
+
+    public String getCheckingCode() {
+        return checkingCode;
+    }
+
+    public void setCheckingCode(String checkingCode) {
+        this.checkingCode = checkingCode;
     }
 }

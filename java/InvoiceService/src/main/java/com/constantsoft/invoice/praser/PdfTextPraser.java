@@ -1,6 +1,5 @@
 package com.constantsoft.invoice.praser;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSString;
