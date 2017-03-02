@@ -31,7 +31,9 @@ public class PDFInvoiceAnalysisServiceTest {
     @Test
     public void testAll() {
         PDFInvoiceAnalysisService service = new PDFInvoiceAnalysisService();
-        File directory = new File("C:\\Users\\Walter\\Desktop\\InvoiceExampleHtml\\exampleFile");
+        String path = "C:\\Users\\walter.xu\\Desktop\\exampleFile";
+//        String path = "C:\\Users\\Walter\\Desktop\\InvoiceExampleHtml\\exampleFile";
+        File directory = new File(path);
         File[] subFile = directory.listFiles();
         int totalCount = 0;
         int successCount = 0;
@@ -43,7 +45,8 @@ public class PDFInvoiceAnalysisServiceTest {
                 try {
                     InvoiceInformationEntity entity = service.generate(target, true);
                     if (entity != null && !"-".equals(entity.getInvoiceCode()) && !"".equals(entity.getInvoiceNumber())) {
-                        printList.add("[SUCCESS]" + target.getPath() + ":     " + entity.getInvoiceCode() + "|" + entity.getInvoiceNumber());
+                        printList.add("[SUCCESS]" + target.getPath() + ":     " + entity.getInvoiceCode() + "|" + entity.getInvoiceNumber()
+                        +"|"+entity.getCheckingCode()+"|"+entity.getInvoiceDate()+"|"+entity.getCompanyName());
                         successCount++;
                     } else {
                         printList.add("[FAILED]" + target.getPath() + ":     " + entity.getInvoiceCode() + "|" + entity.getInvoiceNumber());

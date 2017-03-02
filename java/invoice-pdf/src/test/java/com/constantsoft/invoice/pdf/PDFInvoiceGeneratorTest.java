@@ -14,8 +14,8 @@ public class PDFInvoiceGeneratorTest {
 
     public static void main(String[] args) throws Exception{
         PDFInvoiceGeneratorTest test = new PDFInvoiceGeneratorTest();
-        test.testGenerate();
-//        test.testGenerateAll();
+//        test.testGenerate();
+        test.testGenerateAll();
     }
 
     public void testGenerateAll() {
