@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+
 /**
  * Created by walter.xu on 2016/12/30.
  */
@@ -52,16 +54,32 @@ public class InvoiceNumberAndCodeAPI {
     }
 
     @RequestMapping(value = "/api/invoice/pdf/analysis", method = RequestMethod.POST, consumes = "multipart/form-data")
-    public InvoiceCodeAndNumberResponseVO queryInvoiceByPdf(@RequestParam("pdfFile") MultipartFile file,
-                                                            @RequestParam("checkSign") Boolean checkSign){
+     public InvoiceCodeAndNumberResponseVO queryInvoiceByPdf(@RequestParam("pdfFile") MultipartFile file,
+                                                             @RequestParam("checkSign") Boolean checkSign){
         InvoiceCodeAndNumberResponseVO res = new InvoiceCodeAndNumberResponseVO();
         try {
             checkSign = (checkSign==null?false:checkSign);
             InvoiceInformationEntity entity = service.generate(file.getBytes(), checkSign);
             if (entity!=null&&entity.getInvoiceNumber()!=null) res.setInvoiceNumber(entity.getInvoiceNumber());
             if (entity!=null&&entity.getInvoiceCode()!=null) res.setInvoiceCode(entity.getInvoiceCode());
-            res.setCheckingCode(entity.getCheckingCode());
-            res.setInvoiceDate(entity.getInvoiceDate());
+            if (entity!=null) res.setCheckingCode(entity.getCheckingCode());
+            if (entity!=null) res.setInvoiceDate(entity.getInvoiceDate());
+        }catch (Exception e){
+            res.setResultCode(CODE_SYSTEM_ERROR);
+            res.setErrorMessage("Error message: "+e.getMessage());
+        }
+        return res;
+    }
+    @RequestMapping(value = "/api/invoice/pdf/analysis")
+    public InvoiceCodeAndNumberResponseVO queryInvoiceByPath(String file, Boolean checkSign){
+        InvoiceCodeAndNumberResponseVO res = new InvoiceCodeAndNumberResponseVO();
+        try {
+            checkSign = (checkSign==null?false:checkSign);
+            InvoiceInformationEntity entity = service.generate(new File(file), checkSign);
+            if (entity!=null&&entity.getInvoiceNumber()!=null) res.setInvoiceNumber(entity.getInvoiceNumber());
+            if (entity!=null&&entity.getInvoiceCode()!=null) res.setInvoiceCode(entity.getInvoiceCode());
+            if (entity!=null) res.setCheckingCode(entity.getCheckingCode());
+            if (entity!=null) res.setInvoiceDate(entity.getInvoiceDate());
         }catch (Exception e){
             res.setResultCode(CODE_SYSTEM_ERROR);
             res.setErrorMessage("Error message: "+e.getMessage());

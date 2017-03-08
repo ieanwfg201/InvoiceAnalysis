@@ -24,14 +24,6 @@
             return;
         }
         var formData = new FormData($( "#pdfFileUpload" )[0]);
-
-        /*$('#pdfFileUpload').submit(function() {
-            $(this).ajaxSubmit(function(data) {
-                alert(data);
-            });
-            return false;
-        });*/
-
                 $.ajax({
                     url: '/api/invoice/pdf/analysis' ,
                     type: 'POST',
