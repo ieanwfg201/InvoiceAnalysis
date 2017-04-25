@@ -17,7 +17,7 @@ import java.nio.file.Files;
 @Component
 public class PDFInvoiceAnalysisService implements IInvoiceAnalysisService {
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
-    private PDFInvoiceGenerator generator = new PDFInvoiceGenerator();
+    private PDFInvoiceGenerator generator = new PDFInvoiceGenerator(true);
     @Override
     public InvoiceInformationEntity generate(File file)throws Exception {
         return generate(file, false);

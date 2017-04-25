@@ -8,6 +8,8 @@ import java.util.Date;
  * Created by walter.xu on 2017/2/28.
  */
 public class InvoiceInfosEntity {
+    private int errorCode = 0;
+    private String errorMessage = "";
     private String text;
     private String invoiceCode = "-";   // 长度为8位的数字，前缀可能为：发票号码
     private String invoiceNumber ="-";  // 长为10/12位的数字，前缀可能为：发票代码
@@ -17,6 +19,11 @@ public class InvoiceInfosEntity {
     private double amount;              // 金额，格式为：￥10.00(计最大的值)
     private String companyName;         // 纳税企业名称
 
+    public InvoiceInfosEntity(){}
+    public InvoiceInfosEntity(String errorMessage){
+        this.errorCode = 1;
+        this.errorMessage = errorMessage;
+    }
     public String getInvoiceCode() {
         return invoiceCode;
     }
@@ -79,5 +86,21 @@ public class InvoiceInfosEntity {
 
     public void setInvoiceDateStr(String invoiceDateStr) {
         this.invoiceDateStr = invoiceDateStr;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

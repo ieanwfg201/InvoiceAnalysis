@@ -35,22 +35,35 @@ import java.util.List;
  * PDF invoice generator: generate pdf format invoice information
  */
 public final class PDFInvoiceGenerator {
-    public InvoiceInfosEntity generate(File file) throws PDFAnalysisException{
+    private boolean throwException = false;
+
+    public PDFInvoiceGenerator() {
+    }
+
+    public PDFInvoiceGenerator(boolean throwException) {
+        this.throwException = throwException;
+    }
+
+    public InvoiceInfosEntity generate(File file) throws PDFAnalysisException {
         return generate(file, false);
     }
+
     public InvoiceInfosEntity generate(File file, boolean checkingSignature) throws PDFAnalysisException {
         byte[] bytes = null;
         try {
             bytes = Files.readAllBytes(file.toPath());
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         return generate(bytes, checkingSignature);
     }
-    public InvoiceInfosEntity generate(byte[] bytes) throws PDFAnalysisException{
+
+    public InvoiceInfosEntity generate(byte[] bytes) throws PDFAnalysisException {
         return generate(bytes, false);
     }
+
     /**
-     * @param bytes pdf file bytes
+     * @param bytes             pdf file bytes
      * @param checkingSignature if need check signature.
      * @return invoice infos
      * @throws PDFAnalysisException
@@ -67,9 +80,12 @@ public final class PDFInvoiceGenerator {
             // 需要时校验证书
             if (checkingSignature) checkingSignature(doc, bytes, entity);
         } catch (PDFAnalysisException e) {
-            throw e;
+            if (throwException) throw e;
+            else entity = new InvoiceInfosEntity(e.getMessage());
         } catch (Exception e) {
-            throw new PDFAnalysisException("Failed to analysis pdf file", e);
+            if (throwException) throw new PDFAnalysisException("Failed to analysis pdf file", e);
+            else
+                entity = new InvoiceInfosEntity("Failed to analysis pdf file");
         } finally {
             if (doc != null) try {
                 doc.close();
@@ -82,6 +98,7 @@ public final class PDFInvoiceGenerator {
     /**
      * 根据pdf文档获取到对应的相关发票信息
      * 不关闭pdf流
+     *
      * @param doc pdf document
      * @return invioce infos
      */
@@ -89,7 +106,7 @@ public final class PDFInvoiceGenerator {
         PDFTextStripper stripper = new PDFTextStripper();
         stripper.setSortByPosition(true);
         String text = stripper.getText(doc);
-        String[] itemArray = text.split("\r\n");
+        String[] itemArray = text.replaceAll("\r\n", "\n").split("\n");
         PDFInvoiceInforGenerateFactory factory = new PDFInvoiceInforGenerateFactory();
         for (String item : itemArray) {
             factory.executeLine(item);
@@ -101,8 +118,8 @@ public final class PDFInvoiceGenerator {
 
     // check if invoice information is valid
     private void checkInvoiceInfosValid(InvoiceInfosEntity entity) throws PDFAnalysisException {
-        String error= null;
-        if (entity==null) error="Failed to analysis PDF file";
+        String error = null;
+        if (entity == null) error = "Failed to analysis PDF file";
     }
 
     private void checkingSignature(PDDocument doc, byte[] bytes, InvoiceInfosEntity entity)
@@ -176,53 +193,54 @@ public final class PDFInvoiceGenerator {
         if (!isSameDay(entity.getInvoiceDateStr(), signDate))
             throw new PDFAnalysisException("Invoice date not equal with signature.[" + entity.getInvoiceDateStr() + ", " + signDate + "]");
     }
-    private boolean isSameDay(String day1, Date day2){
+
+    private boolean isSameDay(String day1, Date day2) {
         Integer day1Int = Integer.valueOf(day1.trim());
-        if (day1Int==null||day2==null) return false;
+        if (day1Int == null || day2 == null) return false;
         boolean isSame = true;
         Calendar cal2 = Calendar.getInstance();
         cal2.setTime(day2);
-        isSame = day1Int%100 == cal2.get(Calendar.DAY_OF_MONTH);
+        isSame = day1Int % 100 == cal2.get(Calendar.DAY_OF_MONTH);
         day1Int /= 100;
-        isSame = day1Int%100 == (cal2.get(Calendar.MONTH)+1);
+        isSame = day1Int % 100 == (cal2.get(Calendar.MONTH) + 1);
         day1Int /= 100;
         isSame = day1Int == cal2.get(Calendar.YEAR);
         return isSame;
     }
+
     // 校验参数
-    private static boolean validatePdfInfos(String certInfos, InvoiceInfosEntity entity){
-        if (certInfos==null||"".equals(certInfos)) return false;
+    private static boolean validatePdfInfos(String certInfos, InvoiceInfosEntity entity) {
+        if (certInfos == null || "".equals(certInfos)) return false;
         boolean checkCompanyName = false;
-        if (entity.getCompanyName()!=null&&!"".equals(entity.getCompanyName())){
+        if (entity.getCompanyName() != null && !"".equals(entity.getCompanyName())) {
             checkCompanyName = certInfos.contains(entity.getCompanyName());
         }
         boolean checkSignName = false;
         // 获取cn
         String[] arrays = certInfos.toLowerCase().split(",");
-        for(String keyValue: arrays){
-            if (keyValue.trim().startsWith("o=")){
+        for (String keyValue : arrays) {
+            if (keyValue.trim().startsWith("o=")) {
                 checkSignName = entity.getText().contains(keyValue.trim().substring(2));
-            }else if (keyValue.trim().startsWith("ou=")||keyValue.trim().startsWith("cn="))
+            } else if (keyValue.trim().startsWith("ou=") || keyValue.trim().startsWith("cn="))
                 checkSignName = entity.getText().contains(keyValue.trim().substring(3));
             if (checkSignName) break;
         }
-        return checkCompanyName||checkSignName;
+        return checkCompanyName || checkSignName;
     }
 
     /**
      * Verify a PKCS7 signature.
      *
      * @param byteArray the byte sequence that has been signed
-     * @param contents the /Contents field as a COSString
-     * @param sig the PDF signature (the /V dictionary)
+     * @param contents  the /Contents field as a COSString
+     * @param sig       the PDF signature (the /V dictionary)
      * @throws CertificateException
      * @throws CMSException
      * @throws StoreException
      * @throws OperatorCreationException
      */
     private static String verifyPKCS7(byte[] byteArray, COSString contents, PDSignature sig)
-            throws Exception
-    {
+            throws Exception {
         // inspiration:
         // http://stackoverflow.com/a/26702631/535646
         // http://stackoverflow.com/a/9261365/535646
@@ -243,6 +261,6 @@ public final class PDFInvoiceGenerator {
 //            System.out.println("Signature verified");
             throw new Exception("Signature verified failed");
         }*/
-        return ((X509CertImpl)certFromSignedData).getSubjectDN().getName();
+        return ((X509CertImpl) certFromSignedData).getSubjectDN().getName();
     }
 }

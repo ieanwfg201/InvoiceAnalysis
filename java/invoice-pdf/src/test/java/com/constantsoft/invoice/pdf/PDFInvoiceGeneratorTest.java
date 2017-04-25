@@ -19,7 +19,8 @@ public class PDFInvoiceGeneratorTest {
     }
 
     public void testGenerateAll() {
-        String directory = "C:\\Users\\walter.xu\\Desktop\\exampleFile";
+//        String directory = "C:\\Users\\walter.xu\\Desktop\\exampleFile";
+        String directory = "/services/git/GIthub/InvoiceAnalysis/testingFiles";
         File[] fileArray = new File(directory).listFiles();
         List<String> resultList = new ArrayList<String>();
         int failed =0, success =0;

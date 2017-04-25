@@ -191,9 +191,9 @@ public final class PDFInvoiceInforGenerateFactory {
         int end = startPostion;
         while (end < item.length()) {
             if (availableWords.indexOf(item.charAt(end)) < 0) {
-                end++;
-                if (start==0) continue;
+                if (start==0) { end++; continue;}
                 else if (minLength>0&&end-start<minLength){
+                    end++;
                     start = end; continue;
                 }else {break;}
                 /*if (end-start<minLength){
@@ -207,7 +207,7 @@ public final class PDFInvoiceInforGenerateFactory {
             end++;
         }
         if (start==0) return null;
-        if (end == item.length()) end++;
-        return item.substring(start, end-1);
+//        if (end == item.length()) end++;
+        return item.substring(start, end);
     }
 }
