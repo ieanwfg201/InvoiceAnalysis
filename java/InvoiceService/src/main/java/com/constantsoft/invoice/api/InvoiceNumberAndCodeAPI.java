@@ -70,6 +70,7 @@ public class InvoiceNumberAndCodeAPI {
         }
         return res;
     }
+
     @RequestMapping(value = "/api/invoice/pdf/analysis")
     public InvoiceCodeAndNumberResponseVO queryInvoiceByPath(String file, Boolean checkSign){
         InvoiceCodeAndNumberResponseVO res = new InvoiceCodeAndNumberResponseVO();

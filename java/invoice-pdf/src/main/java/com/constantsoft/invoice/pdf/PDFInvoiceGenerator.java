@@ -1,6 +1,6 @@
 package com.constantsoft.invoice.pdf;
 
-import com.constantsoft.invoice.pdf.entity.InvoiceInfosEntity;
+import com.constantsoft.invoice.pdf.entity.*;
 import com.constantsoft.invoice.pdf.exception.PDFAnalysisException;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -16,11 +16,9 @@ import org.bouncycastle.util.Store;
 import org.bouncycastle.util.StoreException;
 import sun.security.x509.X509CertImpl;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.*;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -35,7 +33,7 @@ import java.util.List;
  * PDF invoice generator: generate pdf format invoice information
  */
 public final class PDFInvoiceGenerator {
-    private boolean throwException = false;
+    private boolean throwException = true;
 
     public PDFInvoiceGenerator() {
     }
@@ -49,18 +47,76 @@ public final class PDFInvoiceGenerator {
     }
 
     public InvoiceInfosEntity generate(File file, boolean checkingSignature) throws PDFAnalysisException {
+        byte[] bytes = readBytesFromFile(file);
+        return generate(bytes, checkingSignature);
+    }
+
+    private byte[] readBytesFromFile(File file){
         byte[] bytes = null;
+        ByteArrayOutputStream bis;
+        FileInputStream fis = null;
         try {
-            bytes = Files.readAllBytes(file.toPath());
+            fis = new FileInputStream(file);
+            bis = new ByteArrayOutputStream();
+            byte[] temp = new byte[1024];
+            while(fis.read(temp, 0 ,temp.length)!=-1){
+                bis.write(temp);
+            }
+            bytes = bis.toByteArray();
         } catch (Exception e) {
         }
-
-        return generate(bytes, checkingSignature);
+        return bytes;
     }
 
     public InvoiceInfosEntity generate(byte[] bytes) throws PDFAnalysisException {
         return generate(bytes, false);
     }
+
+    /************************** 新建方法 ***************************/
+
+    public InvoiceAllEntity generateAll(File file, boolean checkSignature){
+        return generateAll(readBytesFromFile(file), checkSignature);
+    }
+    public InvoiceCodeEntity getInvoiceCode(byte[] bytes){
+        InvoiceAllEntity entity = generateAll(bytes, false);
+        return new InvoiceCodeEntity(entity.getErrorCode(), entity.getErrorMessage(), entity.getInvoiceCode());
+    }
+    public InvoiceCodeEntity getInvoiceCode(File file){
+        return getInvoiceCode(readBytesFromFile(file));
+    }
+    public InvoiceNumberEntity getInvoiceNumber(byte[] bytes){
+        InvoiceAllEntity entity = generateAll(bytes, false);
+        return new InvoiceNumberEntity(entity.getErrorCode(), entity.getErrorMessage(), entity.getInvoiceNumber());
+    }
+    public InvoiceNumberEntity getInvoiceNumber(File file){
+        return getInvoiceNumber(readBytesFromFile(file));
+    }
+    public InvoiceDateEntity getInvoiceDateStr(byte[] bytes){
+        InvoiceAllEntity entity = generateAll(bytes, false);
+        return new InvoiceDateEntity(entity.getErrorCode(), entity.getErrorMessage(), entity.getInvoiceDateStr());
+    }
+    public InvoiceDateEntity getInvoiceDateStr(File file){
+        return getInvoiceDateStr(readBytesFromFile(file));
+    }
+    public CheckingCodeEntity getCheckingCode(byte[] bytes){
+        InvoiceAllEntity entity = generateAll(bytes, false);
+        return new CheckingCodeEntity(entity.getErrorCode(), entity.getErrorMessage(), entity.getCheckingCode());
+    }
+    public CheckingCodeEntity getCheckingCode(File file){
+        return getCheckingCode(readBytesFromFile(file));
+    }
+    public BaseEntity checkingSignature(byte[] bytes){
+        InvoiceAllEntity entity = generateAll(bytes, true);
+        BaseEntity result = new BaseEntity();
+        result.setErrorCode(entity.getCheckSignatureCode());
+        result.setErrorMessage(entity.getCheckSignatureMessage());
+        return result;
+    }
+    public BaseEntity checkingSignature(File file){
+        return checkingSignature(readBytesFromFile(file));
+    }
+
+    /**********************************************************************/
 
     /**
      * @param bytes             pdf file bytes
@@ -83,9 +139,9 @@ public final class PDFInvoiceGenerator {
             if (throwException) throw e;
             else entity = new InvoiceInfosEntity(e.getMessage());
         } catch (Exception e) {
-            if (throwException) throw new PDFAnalysisException("Failed to analysis pdf file", e);
+            if (throwException) throw new PDFAnalysisException(e.getMessage(), e);
             else
-                entity = new InvoiceInfosEntity("Failed to analysis pdf file");
+                entity = new InvoiceInfosEntity(e.getMessage());
         } finally {
             if (doc != null) try {
                 doc.close();
@@ -93,6 +149,45 @@ public final class PDFInvoiceGenerator {
             }
         }
         return entity;
+    }
+
+    public InvoiceAllEntity generateAll(byte[] bytes, boolean checkSignature) {
+        InvoiceAllEntity result = new InvoiceAllEntity();
+        PDDocument doc = null;
+        try {
+            InvoiceInfosEntity entity = null;
+            // generate date information
+            try {
+                doc = PDDocument.load(bytes);
+                // 获取pdf发票信息
+                entity = generateInvoiceInfosFromPdfBytes(doc);
+            }catch (Exception e){
+                entity = new InvoiceInfosEntity(e.getMessage());
+            }
+            result.setErrorCode(entity.getErrorCode());
+            result.setErrorMessage(entity.getErrorMessage());
+            result.setText(entity.getText());
+            result.setInvoiceCode(entity.getInvoiceCode());
+            result.setInvoiceNumber(entity.getInvoiceNumber());
+            result.setInvoiceDateStr(entity.getInvoiceDateStr());
+            result.setCheckingCode(entity.getCheckingCode());
+            result.setMachineCode(entity.getMachineCode());
+            result.setAmount(entity.getAmount());
+            result.setCompanyName(entity.getCompanyName());
+            // checking signature
+            try {
+                if (checkSignature){
+                    result.setCheckSignature(true);
+                    checkingSignature(doc, bytes, entity);
+                }
+            }catch (Exception e){
+                result.setCheckSignatureCode(1);
+                result.setCheckSignatureMessage(e.getMessage());
+            }
+        }finally{
+            if (doc!=null) try{doc.close();}catch (Exception e){}
+        }
+        return result;
     }
 
     /**
@@ -123,7 +218,7 @@ public final class PDFInvoiceGenerator {
     }
 
     private void checkingSignature(PDDocument doc, byte[] bytes, InvoiceInfosEntity entity)
-            throws PDFAnalysisException, IOException, Exception {
+            throws IOException,PDFAnalysisException,CMSException,CertificateException,NoSuchAlgorithmException{
         List<PDSignature> signList = doc.getSignatureDictionaries();
         // 1 证书不能为空
         if (signList == null || signList.size() == 0)
@@ -239,8 +334,8 @@ public final class PDFInvoiceGenerator {
      * @throws StoreException
      * @throws OperatorCreationException
      */
-    private static String verifyPKCS7(byte[] byteArray, COSString contents, PDSignature sig)
-            throws Exception {
+    private static String verifyPKCS7(byte[] byteArray, COSString contents, PDSignature sig) throws
+    CMSException,CertificateException{
         // inspiration:
         // http://stackoverflow.com/a/26702631/535646
         // http://stackoverflow.com/a/9261365/535646

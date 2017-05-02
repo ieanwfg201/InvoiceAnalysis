@@ -6,7 +6,7 @@
     <name>invoice-pdf</name>
     <groupId>com.constantsoft.common</groupId>
     <artifactId>invoice-pdf</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
 
     <dependencies>
         <!-- PDF related -->
