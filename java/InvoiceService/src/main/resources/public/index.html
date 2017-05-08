@@ -23,9 +23,24 @@
             alert("Target file is not a valid PDF file, Please re-select.");
             return;
         }
+        var url = "/api/invoice/pdf/analysis";
+        var radioArray = document.getElementsByName("method");
+
+        for (var i=0;i<radioArray.length;i++){
+            if (radioArray[i].checked){
+                if (radioArray[i].value==1){
+                    url = "/api/invoice/pdf/analysis/all";
+                }
+            }
+        }
+
         var formData = new FormData($( "#pdfFileUpload" )[0]);
+        if (formData.get("checkSign") == null){
+            formData.append("checkSign", false);
+        }
+        formData.c
                 $.ajax({
-                    url: '/api/invoice/pdf/analysis' ,
+                    url: url ,
                     type: 'POST',
                     data: formData,
                     async: false,
@@ -33,19 +48,15 @@
                     contentType: false,
                     processData: false,
                     success: function (returndata) {
-                        if(returndata.resultCode==0){
-                            alert("Analysis success.");
-                            $("#pdfCode").val(returndata.invoiceCode);
-                            $("#pdfNumber").val(returndata.invoiceNumber);
-                            $("#pdfDate").val(returndata.invoiceDate);
-                            $("#checkingCode").val(returndata.checkingCode);
-                        }else{
-                            alert("error:"+returndata.errorMessage)
-                            $("#pdfCode").val(returndata.invoiceCode);
-                            $("#pdfNumber").val(returndata.invoiceNumber);
-                            $("#pdfDate").val(returndata.invoiceDate);
-                            $("#checkingCode").val(returndata.checkingCode);
-                        }
+
+                        alert("Analysis result: "+returndata.resultCode+". errorMessage:"+returndata.errorMessage)
+                        $("#responseCodeMessage").val(returndata.resultCode+": "+returndata.errorMessage);
+                        $("#pdfCode").val(returndata.invoiceCode);
+                        $("#pdfNumber").val(returndata.invoiceNumber);
+                        $("#pdfDate").val(returndata.invoiceDate);
+                        $("#pdfCheckingCode").val(returndata.checkingCode);
+                        $("#checkingSign").val(returndata.checkingSign);
+                        $("#checkSignCodeMessage").val(returndata.checkSignErrorCode+": "+returndata.checkSIgnErrorMessage);
 
                         return false;
                     }
@@ -58,36 +69,58 @@
 <hr />
 <div style="width: 80%;margin: 0 auto;">
     <p style="font-size: medium; font-weight: bold">PDF Invoice validate: </p><br>
+    <hr>
     <form id="pdfFileUpload" name="pdfFileUpload" enctype="multipart/form-data" >
         <table>
             <tr>
                 <td>Target PDF file:</td>
-                <td><input id="pdfFile" name="pdfFile" type="file"  /><input id="pdfSubmit" type="button" value="submit" onclick="pdfQuery()" /></td>
+                <td><input id="pdfFile" name="pdfFile" type="file"/></td>
             </tr>
-            <tr></tr>
-            <tr><td>
-                Check Signature?
-            </td><td><input id ="checkSign" name="checkSign" type="checkbox" checked/></td></tr>
+            <tr>
+                <td>Call method</td>
+                <td>
+                    <label><input name="method" type="radio" value="1" checked />All(including validation message)</label>
+                    <label><input name="method" type="radio" value="2" />Only Invoice infos</label>
+                </td>
+            </tr>
+            <tr>
+                <td>Checking Sign</td>
+                <td><input id ="checkSign" name="checkSign" type="checkbox" checked/></td>
+            </tr>
             <tr>
                 <td></td>
-                <td><input id="pdfError" name="pdfError" readonly hidden /></td>
+                <td><input id="pdfSubmit" type="button" value="submit" onclick="pdfQuery()" /></td>
+            </tr>
+
+            <tr>
+                <td>Response message:</td>
+                <td><input id = "responseCodeMessage" style="width: 300px" readonly></td>
             </tr>
             <tr>
-                <td>Code：</td>
-                <td><input id="pdfCode" name="pdfCode" readonly /></td>
+                <td>Code:</td>
+                <td><input id = "pdfCode" style="width: 300px" readonly></td>
             </tr>
             <tr>
-                <td>Number：</td>
-                <td><input id="pdfNumber" name="pdfNumber" readonly /></td>
+                <td>Number:</td>
+                <td><input id = "pdfNumber" style="width: 300px" readonly></td>
             </tr>
             <tr>
-                <td>Date：</td>
-                <td><input id="pdfDate" name="pdfDate" readonly /></td>
+                <td>Date:</td>
+                <td><input id = "pdfDate" style="width: 300px" readonly></td>
             </tr>
             <tr>
-                <td>Checking Code：</td>
-                <td><input id="checkingCode" name="checkingCode" readonly /></td>
+                <td>Checking code:</td>
+                <td><input id = "pdfCheckingCode" style="width: 300px" readonly></td>
             </tr>
+            <tr>
+                <td>Checking signature:</td>
+                <td><input id = "checkingSign" style="width: 300px" readonly></td>
+            </tr>
+            <tr>
+                <td>Checking signature code&message:</td>
+                <td><input id = "checkSignCodeMessage" style="width: 300px" readonly></td>
+            </tr>
+
         </table>
     </form>
 
