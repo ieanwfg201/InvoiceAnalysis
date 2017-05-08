@@ -5,7 +5,9 @@ import com.constantsoft.invoice.pdf.entity.*;
 import javax.annotation.Generated;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by walter.xu on 2017/2/28.
@@ -17,13 +19,14 @@ public class PDFInvoiceGeneratorTest {
         PDFInvoiceGeneratorTest test = new PDFInvoiceGeneratorTest();
 //        test.testGenerate();
 //        test.testGenerateAll();
+        test.testGenerateAllCount();
 
 //        test.testGenerateFile("/home/walter/Desktop/01100160011148231758.pdf");
     }
 
     public void testGenerateAll() {
-//        String directory = "C:\\Users\\walter.xu\\Desktop\\exampleFile";
-        String directory = "/services/git/GIthub/InvoiceAnalysis/testingFiles";
+        String directory = "C:\\Users\\Walter\\Desktop\\exampleFile";
+//        String directory = "/services/git/GIthub/InvoiceAnalysis/testingFiles";
         File[] fileArray = new File(directory).listFiles();
         List<String> resultList = new ArrayList<String>();
         int failed =0, success =0;
@@ -40,7 +43,47 @@ public class PDFInvoiceGeneratorTest {
         for (String result : resultList) {
             System.out.println(result);
         }
-        System.out.println("Success: "+success+", failed: "+failed);
+        System.out.println("Success: " + success + ", failed: " + failed);
+    }
+
+    public void testGenerateAllCount(){
+        String directory = "C:\\Users\\Walter\\Desktop\\exampleFile";
+//        String directory = "/services/git/GIthub/InvoiceAnalysis/testingFiles";
+        File[] fileArray = new File(directory).listFiles();
+        Map<String, InvoiceAllEntity> map = new HashMap<>();
+        for(File file: fileArray){
+            try {
+                InvoiceAllEntity entity = generator.generateAll(file, true);
+                map.put(file.getName(), entity);
+            }catch (Exception e){
+                InvoiceAllEntity entity =  new InvoiceAllEntity();
+                entity.setErrorCode(1); entity.setErrorMessage(e.getMessage());
+                map.put(file.getName(),entity);
+            }
+        }
+        List<String> successList = new ArrayList<>();
+        List<String> failedList = new ArrayList<>();
+        List<String> checkSignFailList = new ArrayList<>();
+        for (String key : map.keySet()) {
+            InvoiceAllEntity entity = map.get(key);
+            if (entity.getErrorCode()==1) failedList.add(key);
+            else if (entity.getCheckSignatureCode()==1) checkSignFailList.add(key);
+            else successList.add(key);
+        }
+        System.out.println("Success lines");
+        for (String key : successList) {
+            System.out.println("   "+key+": "+formatStr(map.get(key)));
+        }
+        System.out.println("Failed lines");
+        for (String key : failedList) {
+            System.out.println("   "+key+": "+formatStr(map.get(key)));
+        }
+        System.out.println("CheckSIgnFailed lines");
+        for (String key : checkSignFailList) {
+            System.out.println("   "+key+": "+formatStr(map.get(key)));
+        }
+        System.out.println("Success: "+successList.size()+", failed: "+failedList.size()+", checkSignFailed: "+checkSignFailList.size());
+
     }
 
     public void testGenerate() throws Exception {
