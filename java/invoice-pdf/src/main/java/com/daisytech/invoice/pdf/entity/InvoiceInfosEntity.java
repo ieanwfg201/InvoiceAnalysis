@@ -11,8 +11,8 @@ public class InvoiceInfosEntity {
     private int errorCode = 0;
     private String errorMessage = "";
     private String text;
-    private String invoiceCode = "-";   // 长度为8位的数字，前缀可能为：发票号码
-    private String invoiceNumber ="-";  // 长为10/12位的数字，前缀可能为：发票代码
+    private String invoiceCode = "";    // 长度为8位的数字，前缀可能为：发票号码
+    private String invoiceNumber ="";   // 长为10/12位的数字，前缀可能为：发票代码
     private String invoiceDateStr;      // 格式为: YYYY年MM月dd日，前缀可能为：开票日期
     private String checkingCode;        // 校验码：每5位数字为一组，共计4组20个数字，各组以" "分开，前缀可能为：校验码
     private String machineCode;         // 机器代码：12位数字，前缀可能为：机器代码

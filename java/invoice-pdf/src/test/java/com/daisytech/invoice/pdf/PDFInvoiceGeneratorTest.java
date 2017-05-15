@@ -17,11 +17,11 @@ public class PDFInvoiceGeneratorTest {
     public static void main(String[] args) throws Exception{
         PDFInvoiceGeneratorTest test = new PDFInvoiceGeneratorTest();
 //        test.testGenerate();
-        test.testGenerateAll();
+//        test.testGenerateAll();
 
 //        String address = "/home/walter/Desktop/2017050811175217524872680313146559236.pdf";
-          String address = "/home/walter/Desktop/2017050811175617564872676813146559236.pdf";
-//        test.testGenerateFile(address);
+          String address = "/home/walter/Desktop/invioce/2017050811175617564872676813146559236.pdf";
+        test.testGenerateFile(address);
 //        test.praseText(address);
     }
 
