@@ -35,10 +35,9 @@
         }
 
         var formData = new FormData($( "#pdfFileUpload" )[0]);
-        if (formData.get("checkSign") == null){
+        if (!document.getElementById("checkSign").checked){
             formData.append("checkSign", false);
         }
-        formData.c
                 $.ajax({
                     url: url ,
                     type: 'POST',

@@ -1,8 +1,6 @@
 package com.daisytech.invoice.pdf;
 
 import com.daisytech.invoice.pdf.entity.*;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,11 +18,11 @@ public class PDFInvoiceGeneratorTest {
         PDFInvoiceGeneratorTest test = new PDFInvoiceGeneratorTest();
 //        test.testGenerate();
 //        test.testGenerateAll();
-        test.testGenerateAllCount();
+//        test.testGenerateAllCount();
 
 //        String address = "/home/walter/Desktop/2017050811175217524872680313146559236.pdf";
-          String address = "/home/walter/Desktop/2017050811175617564872676813146559236.pdf";
-//        test.testGenerateFile(address);
+          String address = "C:\\Users\\Walter\\Desktop\\exampleFile\\2017050811175617564872676813146559236.pdf";
+        test.testGenerateFile(address);
 //        test.praseText(address);
     }
 
@@ -178,9 +176,9 @@ public class PDFInvoiceGeneratorTest {
         return str.toString();
     }
 
-    public void praseText(String file) throws Exception{
+    /*public void praseText(String file) throws Exception{
         PDFTextStripper stripper = new PDFTextStripper();
         PDDocument pd = PDDocument.load(new File(file));
         System.out.println(stripper.getText(pd));
-    }
+    }*/
 }
