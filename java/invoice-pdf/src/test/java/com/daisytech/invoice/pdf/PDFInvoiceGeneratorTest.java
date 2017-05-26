@@ -17,7 +17,7 @@ public class PDFInvoiceGeneratorTest {
     public static void main(String[] args) throws Exception {
         PDFInvoiceGeneratorTest test = new PDFInvoiceGeneratorTest();
 //        test.testGenerate();
-        test.testGenerateAll();
+//        test.testGenerateAll();
 //        test.testGenerateAllCount();
 
 //        String address = "/home/walter/Desktop/2017050811175217524872680313146559236.pdf";
@@ -25,12 +25,18 @@ public class PDFInvoiceGeneratorTest {
         String address = "C:\\Users\\Walter\\Desktop\\exampleFile\\10.pdf.200.jpg";
 
 //        test.testGenerateFile(address);
-//        test.praseText(address);
+
+        address = "/home/walter/Desktop/文档/invoice/20170526";
+        boolean checkSign = true;
+        boolean checkSignDate = false;
+
+        test.testGenerateFolderAll(address, checkSign);
+        test.testGenerateAllByCheckSignatureDateValid(address, checkSign, checkSignDate);
     }
 
     public void testGenerateAll() {
-        String directory = "C:\\Users\\Walter\\Desktop\\exampleFile";
-//        String directory = "/services/git/GIthub/InvoiceAnalysis/testingFiles";
+//        String directory = "C:\\Users\\Walter\\Desktop\\exampleFile";
+        String directory = "/home/walter/Desktop/文档/invoice/20170526";
         File[] fileArray = new File(directory).listFiles();
         List<String> resultList = new ArrayList<String>();
         int failed = 0, success = 0;
@@ -113,6 +119,46 @@ public class PDFInvoiceGeneratorTest {
             str.append("CheckCode=").append(entity.getCheckingCode()).append(", ");
         }
         return str.toString();
+    }
+
+    private void testGenerateFolderAll(String folderPath, boolean checkSign) {
+        Map<String, InvoiceAllEntity> map = new HashMap<>();
+        File file = new File(folderPath);
+        if (!file.exists()){
+            System.out.println(folderPath+ " not existed."); return;
+        }
+        if (file.isDirectory()){
+            File[] subFileArray = file.listFiles();
+            for(File sub: subFileArray){
+                if (sub.isFile()&&sub.getName().toLowerCase().endsWith(".pdf"))
+                    map.put(sub.getName(), generator.generateAll(sub, checkSign));
+            }
+        }else{
+            map.put(file.getName(), generator.generateAll(file, checkSign));
+        }
+        for (String key : map.keySet()) {
+            System.out.println("####### "+key+" ---> "+formatStr(map.get(key)));
+        }
+    }
+
+    private void testGenerateAllByCheckSignatureDateValid(String folderPath, boolean checkSign, boolean checkSignDate){
+        Map<String, InvoiceAllEntity> map = new HashMap<>();
+        File file = new File(folderPath);
+        if (!file.exists()){
+            System.out.println(folderPath+ " not existed."); return;
+        }
+        if (file.isDirectory()){
+            File[] subFileArray = file.listFiles();
+            for(File sub: subFileArray){
+                if (sub.isFile()&&sub.getName().toLowerCase().endsWith(".pdf"))
+                    map.put(sub.getName(), generator.generateAll(sub, checkSign, checkSignDate));
+            }
+        }else{
+            map.put(file.getName(), generator.generateAll(file, checkSign));
+        }
+        for (String key : map.keySet()) {
+            System.out.println("####### "+key+" ---> "+formatStr(map.get(key)));
+        }
     }
 
     private void testGenerateFile(String filePath) {

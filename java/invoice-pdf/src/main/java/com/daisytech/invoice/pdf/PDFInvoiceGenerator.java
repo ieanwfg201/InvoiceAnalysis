@@ -52,7 +52,7 @@ public final class PDFInvoiceGenerator {
         return generate(bytes, checkingSignature);
     }
 
-    private byte[] readBytesFromFile(File file){
+    private byte[] readBytesFromFile(File file) {
         /*byte[] bytes = null;
         ByteArrayOutputStream bis;
         FileInputStream fis = null;
@@ -70,7 +70,8 @@ public final class PDFInvoiceGenerator {
         byte[] bytes = null;
         try {
             bytes = Files.readAllBytes(file.toPath());
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         return bytes;
     }
 
@@ -80,46 +81,62 @@ public final class PDFInvoiceGenerator {
 
     /************************** 新建方法 ***************************/
 
-    public InvoiceAllEntity generateAll(File file, boolean checkSignature){
+    public InvoiceAllEntity generateAll(File file, boolean checkSignature) {
         return generateAll(readBytesFromFile(file), checkSignature);
     }
-    public InvoiceCodeEntity getInvoiceCode(byte[] bytes){
+    public InvoiceAllEntity generateAll(File file, boolean checkSignature, boolean checkSignatureDateValid) {
+        return generateAll(readBytesFromFile(file), checkSignature, checkSignatureDateValid);
+    }
+
+    public InvoiceCodeEntity getInvoiceCode(byte[] bytes) {
         InvoiceAllEntity entity = generateAll(bytes, false);
         return new InvoiceCodeEntity(entity.getErrorCode(), entity.getErrorMessage(), entity.getInvoiceCode());
     }
-    public InvoiceCodeEntity getInvoiceCode(File file){
+
+    public InvoiceCodeEntity getInvoiceCode(File file) {
         return getInvoiceCode(readBytesFromFile(file));
     }
-    public InvoiceNumberEntity getInvoiceNumber(byte[] bytes){
+
+    public InvoiceNumberEntity getInvoiceNumber(byte[] bytes) {
         InvoiceAllEntity entity = generateAll(bytes, false);
         return new InvoiceNumberEntity(entity.getErrorCode(), entity.getErrorMessage(), entity.getInvoiceNumber());
     }
-    public InvoiceNumberEntity getInvoiceNumber(File file){
+
+    public InvoiceNumberEntity getInvoiceNumber(File file) {
         return getInvoiceNumber(readBytesFromFile(file));
     }
-    public InvoiceDateEntity getInvoiceDateStr(byte[] bytes){
+
+    public InvoiceDateEntity getInvoiceDateStr(byte[] bytes) {
         InvoiceAllEntity entity = generateAll(bytes, false);
         return new InvoiceDateEntity(entity.getErrorCode(), entity.getErrorMessage(), entity.getInvoiceDateStr());
     }
-    public InvoiceDateEntity getInvoiceDateStr(File file){
+
+    public InvoiceDateEntity getInvoiceDateStr(File file) {
         return getInvoiceDateStr(readBytesFromFile(file));
     }
-    public CheckingCodeEntity getCheckingCode(byte[] bytes){
+
+    public CheckingCodeEntity getCheckingCode(byte[] bytes) {
         InvoiceAllEntity entity = generateAll(bytes, false);
         return new CheckingCodeEntity(entity.getErrorCode(), entity.getErrorMessage(), entity.getCheckingCode());
     }
-    public CheckingCodeEntity getCheckingCode(File file){
+
+    public CheckingCodeEntity getCheckingCode(File file) {
         return getCheckingCode(readBytesFromFile(file));
     }
-    public BaseEntity checkingSignature(byte[] bytes){
-        InvoiceAllEntity entity = generateAll(bytes, true);
+
+    public BaseEntity checkingSignature(byte[] bytes) {
+        return checkingSignature(bytes, false);
+    }
+    public BaseEntity checkingSignature(byte[] bytes, boolean checkSignatureDateValid) {
+        InvoiceAllEntity entity = generateAll(bytes, true, checkSignatureDateValid);
         BaseEntity result = new BaseEntity();
         result.setErrorCode(entity.getCheckSignatureCode());
         result.setErrorMessage(entity.getCheckSignatureMessage());
         return result;
     }
-    public BaseEntity checkingSignature(File file){
-        return checkingSignature(readBytesFromFile(file));
+    public BaseEntity checkingSignature(File file) { return  checkingSignature(file, false);}
+    public BaseEntity checkingSignature(File file, boolean checkSignatureDateValid) {
+        return checkingSignature(readBytesFromFile(file), checkSignatureDateValid);
     }
 
     /**********************************************************************/
@@ -140,7 +157,7 @@ public final class PDFInvoiceGenerator {
             // 校验获取的参数是否合法
             checkInvoiceInfosValid(entity);
             // 需要时校验证书
-            if (checkingSignature) checkingSignature(doc, bytes, entity);
+            if (checkingSignature) checkingSignature(doc, bytes, entity, true);
         } catch (PDFAnalysisException e) {
             if (throwException) throw e;
             else entity = new InvoiceInfosEntity(e.getMessage());
@@ -157,7 +174,28 @@ public final class PDFInvoiceGenerator {
         return entity;
     }
 
+    /**
+     * generate all invoice data, including signature infos.
+     * see {@link #generateAll(byte[], boolean, boolean)}
+     *
+     * @param bytes          doc bytes
+     * @param checkSignature if need checking signature, if true, will checking signature
+     * @return invoice infos
+     */
     public InvoiceAllEntity generateAll(byte[] bytes, boolean checkSignature) {
+        return generateAll(bytes, checkSignature, false);
+    }
+
+    /**
+     * generate all invoice data, including signature infos.
+     * see {@link #generateAll(byte[], boolean, boolean)}
+     *
+     * @param bytes                   doc bytes
+     * @param checkSignature          if need checking signature, if true, will checking signature
+     * @param checkSignatureDateValid if checking signature date is valid. only effect when 'checkSignature' is true
+     * @return invoice infos
+     */
+    public InvoiceAllEntity generateAll(byte[] bytes, boolean checkSignature, boolean checkSignatureDateValid) {
         InvoiceAllEntity result = new InvoiceAllEntity();
         PDDocument doc = null;
         try {
@@ -167,7 +205,7 @@ public final class PDFInvoiceGenerator {
                 doc = PDDocument.load(bytes);
                 // 获取pdf发票信息
                 entity = generateInvoiceInfosFromPdfBytes(doc);
-            }catch (Exception e){
+            } catch (Exception e) {
                 entity = new InvoiceInfosEntity(e.getMessage());
             }
             result.setErrorCode(entity.getErrorCode());
@@ -182,16 +220,19 @@ public final class PDFInvoiceGenerator {
             result.setCompanyName(entity.getCompanyName());
             // checking signature
             try {
-                if (checkSignature){
+                if (checkSignature) {
                     result.setCheckSignature(true);
-                    checkingSignature(doc, bytes, entity);
+                    checkingSignature(doc, bytes, entity, checkSignatureDateValid);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 result.setCheckSignatureCode(1);
                 result.setCheckSignatureMessage(e.getMessage());
             }
-        }finally{
-            if (doc!=null) try{doc.close();}catch (Exception e){}
+        } finally {
+            if (doc != null) try {
+                doc.close();
+            } catch (Exception e) {
+            }
         }
         return result;
     }
@@ -223,8 +264,8 @@ public final class PDFInvoiceGenerator {
         if (entity == null) error = "Failed to analysis PDF file";
     }
 
-    private void checkingSignature(PDDocument doc, byte[] bytes, InvoiceInfosEntity entity)
-            throws IOException,PDFAnalysisException,CMSException,CertificateException,NoSuchAlgorithmException{
+    private void checkingSignature(PDDocument doc, byte[] bytes, InvoiceInfosEntity entity, boolean checkSignatureDateValid)
+            throws IOException, PDFAnalysisException, CMSException, CertificateException, NoSuchAlgorithmException {
         List<PDSignature> signList = doc.getSignatureDictionaries();
         // 1 证书不能为空
         if (signList == null || signList.size() == 0)
@@ -242,7 +283,7 @@ public final class PDFInvoiceGenerator {
             String subFilter = sig.getSubFilter();
             if (subFilter != null) {
                 if (subFilter.equals("adbe.pkcs7.detached")) {
-                    String certInfos = verifyPKCS7(buf, contents, sig);
+                    String certInfos = verifyPKCS7(buf, contents, sig, checkSignatureDateValid);
                     checkTrue = validatePdfInfos(certInfos, entity);
                     //TODO check certificate chain, revocation lists, timestamp...
                 } else if (subFilter.equals("adbe.pkcs7.sha1")) {
@@ -256,7 +297,7 @@ public final class PDFInvoiceGenerator {
                     System.out.println("certs=" + certs);
 
                     byte[] hash = MessageDigest.getInstance("SHA1").digest(buf);
-                    String certInfos = verifyPKCS7(hash, contents, sig);
+                    String certInfos = verifyPKCS7(hash, contents, sig, checkSignatureDateValid);
                     checkTrue = validatePdfInfos(certInfos, entity);
                     //TODO check certificate chain, revocation lists, timestamp...
                 } else if (subFilter.equals("adbe.x509.rsa_sha1")) {
@@ -340,8 +381,8 @@ public final class PDFInvoiceGenerator {
      * @throws StoreException
      * @throws OperatorCreationException
      */
-    private static String verifyPKCS7(byte[] byteArray, COSString contents, PDSignature sig) throws
-    CMSException,CertificateException{
+    private static String verifyPKCS7(byte[] byteArray, COSString contents, PDSignature sig, boolean checkSignatureDateValid) throws
+            CMSException, CertificateException {
         // inspiration:
         // http://stackoverflow.com/a/26702631/535646
         // http://stackoverflow.com/a/9261365/535646
@@ -354,7 +395,7 @@ public final class PDFInvoiceGenerator {
         X509CertificateHolder certificateHolder = (X509CertificateHolder) matches.iterator().next();
         X509Certificate certFromSignedData = new JcaX509CertificateConverter().getCertificate(certificateHolder);
 //        System.out.println("certFromSignedData: " + certFromSignedData);
-        certFromSignedData.checkValidity(sig.getSignDate().getTime());
+        if (checkSignatureDateValid) certFromSignedData.checkValidity(sig.getSignDate().getTime());
 
         // no need verify signature data, forbid SHA256 not exist error
         /*if (!signerInformation.verify(new JcaSimpleSignerInfoVerifierBuilder().build(certFromSignedData)))
