@@ -26,12 +26,12 @@ public class PDFInvoiceGeneratorTest {
 
 //        test.testGenerateFile(address);
 
-        address = "/home/walter/Desktop/文档/invoice/20170526";
+        address = "D:\\services\\code\\github\\InvoiceAnalysis\\testingFiles\\20180228\\西贝.pdf";
         boolean checkSign = true;
         boolean checkSignDate = false;
 
         test.testGenerateFolderAll(address, checkSign);
-        test.testGenerateAllByCheckSignatureDateValid(address, checkSign, checkSignDate);
+        //test.testGenerateAllByCheckSignatureDateValid(address, checkSign, checkSignDate);
     }
 
     public void testGenerateAll() {

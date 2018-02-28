@@ -1,0 +1,147 @@
+"C:\Program Files\Java\jdk1.8.0_151\bin\java" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2017.2.6\lib\idea_rt.jar=52668:C:\Program Files\JetBrains\IntelliJ IDEA 2017.2.6\bin" -Dfile.encoding=UTF-8 -classpath "C:\Program Files\Java\jdk1.8.0_151\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\deploy.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\ext\access-bridge-64.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\ext\cldrdata.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\ext\dnsns.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\ext\jaccess.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\ext\jfxrt.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\ext\localedata.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\ext\nashorn.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\ext\sunec.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\ext\sunjce_provider.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\ext\sunmscapi.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\ext\sunpkcs11.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\ext\zipfs.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\javaws.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\jfxswt.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\management-agent.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\plugin.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_151\jre\lib\rt.jar;D:\services\code\github\InvoiceAnalysis\java\invoice-pdf\target\test-classes;D:\services\code\github\InvoiceAnalysis\java\invoice-pdf\target\classes;C:\Users\walter\.m2\repository\org\apache\pdfbox\pdfbox\2.0.5\pdfbox-2.0.5.jar;C:\Users\walter\.m2\repository\org\apache\pdfbox\fontbox\2.0.5\fontbox-2.0.5.jar;C:\Users\walter\.m2\repository\commons-logging\commons-logging\1.2\commons-logging-1.2.jar;C:\Users\walter\.m2\repository\org\bouncycastle\bcmail-jdk15on\1.51\bcmail-jdk15on-1.51.jar;C:\Users\walter\.m2\repository\org\bouncycastle\bcprov-jdk15on\1.51\bcprov-jdk15on-1.51.jar;C:\Users\walter\.m2\repository\org\bouncycastle\bcpkix-jdk15on\1.51\bcpkix-jdk15on-1.51.jar" com.daisytech.invoice.pdf.PDFInvoiceGeneratorTest
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:12 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType0 <init>
+警告: Using fallback MalgunGothic-Semilight for CID-keyed font STSong-Light
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType0 <init>
+警告: Using fallback MalgunGothic-Semilight for CID-keyed font STSong-Light
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType2 <init>
+警告: Using fallback font DengXian-Regular for CID-keyed TrueType font KaiTi_GB2312
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType0 <init>
+警告: Using fallback MalgunGothic-Semilight for CID-keyed font STSong-Light
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType0 <init>
+警告: Using fallback DengXian-Regular for CID-keyed font AdobeKaitiStd-Regular
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType0 <init>
+警告: Using fallback DengXian-Regular for CID-keyed font AdobeKaitiStd-Regular
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType0 <init>
+警告: Using fallback DengXian-Regular for CID-keyed font AdobeKaitiStd-Regular
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType0 <init>
+警告: Using fallback DengXian-Regular for CID-keyed font AdobeKaitiStd-Regular
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType0 <init>
+警告: Using fallback DengXian-Regular for CID-keyed font AdobeKaitiStd-Regular
+二月 28, 2018 11:20:13 下午 org.apache.pdfbox.pdmodel.font.PDCIDFontType0 <init>
+警告: Using fallback MalgunGothic-Semilight for CID-keyed font STSong-Light
+####### 201802051337093793580983213146559236.pdf ---> InvoiceAllEntity: 1: root cannot be null
+    code=, number=, date=null, Company=null, checkCode=null, AMount=0.0
+    SignatureChecking=true, checkSignCode=1, checkSignMessage=No signature found for current pdf document
+####### UserEmail_kelly.guan@ogilvy.com_Time_6232017 65402 PM_FileName_0623-滴滴电子发票.pdf ---> InvoiceAllEntity: 0: 
+    code=012001600111, number=77128223, date=20170622, Company=规格型号, checkCode=07067 64559 80712 83575, AMount=325.91
+    SignatureChecking=true, checkSignCode=1, checkSignMessage=org.apache.pdfbox.cos.COSArray cannot be cast to org.apache.pdfbox.cos.COSString
+####### UserEmail_kelly.guan@ogilvy.com_Time_6232017 65625 PM_FileName_0623-滴滴电子发票-1.pdf ---> InvoiceAllEntity: 0: 
+    code=012001600111, number=76497340, date=20170622, Company=规格型号, checkCode=09363 84231 52055 73586, AMount=95.8
+    SignatureChecking=true, checkSignCode=1, checkSignMessage=org.apache.pdfbox.cos.COSArray cannot be cast to org.apache.pdfbox.cos.COSString
+####### 西贝.pdf ---> InvoiceAllEntity: 0: 
+    code=011001800111, number=21596721, date=20180213, Company=规格型号, checkCode=08604 20304 11656 09948, AMount=157.5
+    SignatureChecking=true, checkSignCode=1, checkSignMessage=org.apache.pdfbox.cos.COSArray cannot be cast to org.apache.pdfbox.cos.COSString
+####### 8月赵洁.pdf ---> InvoiceAllEntity: 0: 
+    code=011001600211, number=28642184, date=20170913, Company=中国移动通信集团北京有限公司, checkCode=80181  32647  31807  77494, AMount=198.0
+    SignatureChecking=true, checkSignCode=1, checkSignMessage=Signaure validation failed.
+####### DZFP_100_c071.pdf ---> InvoiceAllEntity: 0: 
+    code=011001600211, number=28575898, date=20170906, Company=中国移动通信集团北京有限公司, checkCode=48653  98986  15018  47632, AMount=336.0
+    SignatureChecking=true, checkSignCode=1, checkSignMessage=Signaure validation failed.
+####### UserEmail_owen.zhuang@ogilvy.com_Time_252018 13958 PM.pdf ---> InvoiceAllEntity: 0: 
+    code=011001600211, number=36664669, date=20180205, Company=中国联合网络通信有限公司北京市分公司, checkCode=08031 03084 08684 92012, AMount=99.0
+    SignatureChecking=true, checkSignCode=0, checkSignMessage=
+####### 201709.pdf ---> InvoiceAllEntity: 0: 
+    code=011001600211, number=31263332, date=20171023, Company=中国移动通信集团北京有限公司, checkCode=69728  10052  29533  63101, AMount=151.44
+    SignatureChecking=true, checkSignCode=1, checkSignMessage=Signaure validation failed.
+
+Process finished with exit code 0

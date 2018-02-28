@@ -302,8 +302,7 @@ public final class PDFInvoiceGenerator {
                     //TODO check certificate chain, revocation lists, timestamp...
                 } else if (subFilter.equals("adbe.x509.rsa_sha1")) {
                     // example: PDFBOX-2693.pdf
-                    COSString certString = (COSString) sigDict.getDictionaryObject(
-                            COSName.getPDFName("Cert"));
+                    COSString certString = (COSString) sigDict.getDictionaryObject(COSName.getPDFName("Cert"));
                     byte[] certData = certString.getBytes();
                     CertificateFactory factory = CertificateFactory.getInstance("X.509");
                     ByteArrayInputStream certStream = new ByteArrayInputStream(certData);
