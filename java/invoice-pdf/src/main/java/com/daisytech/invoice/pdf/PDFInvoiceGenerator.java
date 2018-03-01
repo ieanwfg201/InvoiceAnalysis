@@ -2,9 +2,7 @@ package com.daisytech.invoice.pdf;
 
 import com.daisytech.invoice.pdf.entity.*;
 import com.daisytech.invoice.pdf.exception.PDFAnalysisException;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSString;
+import org.apache.pdfbox.cos.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -157,19 +155,19 @@ public final class PDFInvoiceGenerator {
             // 校验获取的参数是否合法
             checkInvoiceInfosValid(entity);
             // 需要时校验证书
-            if (checkingSignature) checkingSignature(doc, bytes, entity, true);
+            if (checkingSignature) {checkingSignature(doc, bytes, entity, true);}
         } catch (PDFAnalysisException e) {
-            if (throwException) throw e;
-            else entity = new InvoiceInfosEntity(e.getMessage());
+            if (throwException) {throw e;}
+            else {entity = new InvoiceInfosEntity(e.getMessage());}
         } catch (Exception e) {
-            if (throwException) throw new PDFAnalysisException(e.getMessage(), e);
+            if (throwException) {throw new PDFAnalysisException(e.getMessage(), e);}
             else
-                entity = new InvoiceInfosEntity(e.getMessage());
+            { entity = new InvoiceInfosEntity(e.getMessage());}
         } finally {
-            if (doc != null) try {
+            if (doc != null) {try {
                 doc.close();
             } catch (Exception e) {
-            }
+            }}
         }
         return entity;
     }
@@ -229,10 +227,10 @@ public final class PDFInvoiceGenerator {
                 result.setCheckSignatureMessage(e.getMessage());
             }
         } finally {
-            if (doc != null) try {
+            if (doc != null) {try {
                 doc.close();
             } catch (Exception e) {
-            }
+            }}
         }
         return result;
     }
@@ -261,7 +259,7 @@ public final class PDFInvoiceGenerator {
     // check if invoice information is valid
     private void checkInvoiceInfosValid(InvoiceInfosEntity entity) throws PDFAnalysisException {
         String error = null;
-        if (entity == null) error = "Failed to analysis PDF file";
+        if (entity == null) {error = "Failed to analysis PDF file";}
     }
 
     private void checkingSignature(PDDocument doc, byte[] bytes, InvoiceInfosEntity entity, boolean checkSignatureDateValid)
@@ -302,16 +300,35 @@ public final class PDFInvoiceGenerator {
                     //TODO check certificate chain, revocation lists, timestamp...
                 } else if (subFilter.equals("adbe.x509.rsa_sha1")) {
                     // example: PDFBOX-2693.pdf
-                    COSString certString = (COSString) sigDict.getDictionaryObject(COSName.getPDFName("Cert"));
-                    byte[] certData = certString.getBytes();
-                    CertificateFactory factory = CertificateFactory.getInstance("X.509");
-                    ByteArrayInputStream certStream = new ByteArrayInputStream(certData);
-                    Collection<? extends Certificate> certs = factory.generateCertificates(certStream);
+                    COSBase certBase = sigDict.getDictionaryObject(COSName.getPDFName("Cert"));
+                    if (certBase instanceof COSArray){
+                        for (COSBase cosBase : ((COSArray) certBase)) {
+                            COSString certString = (COSString)((COSObject)(cosBase)).getObject();
+                            byte[] certData = certString.getBytes();
+                            CertificateFactory factory = CertificateFactory.getInstance("X.509");
+                            ByteArrayInputStream certStream = new ByteArrayInputStream(certData);
+                            Collection<? extends Certificate> certs = factory.generateCertificates(certStream);
 //                    System.out.println("certs=" + certs);
-                    for (Certificate cert : certs) {
-                        checkTrue = validatePdfInfos(cert.toString(), entity);
-                        if (checkTrue) break;
+                            for (Certificate cert : certs) {
+                                checkTrue = validatePdfInfos(cert.toString(), entity);
+                                if (checkTrue) {break;}
+                            }
+                            if (checkTrue){break;}
+                        }
+
+                    }else{
+                        COSString certString = (COSString)certBase;
+                        byte[] certData = certString.getBytes();
+                        CertificateFactory factory = CertificateFactory.getInstance("X.509");
+                        ByteArrayInputStream certStream = new ByteArrayInputStream(certData);
+                        Collection<? extends Certificate> certs = factory.generateCertificates(certStream);
+//                    System.out.println("certs=" + certs);
+                        for (Certificate cert : certs) {
+                            checkTrue = validatePdfInfos(cert.toString(), entity);
+                            if (checkTrue) {break;}
+                        }
                     }
+
                     //TODO verify signature, do other function to check.
                 } else {
 //                    System.err.println("Unknown certificate type: " + subFilter);
@@ -328,16 +345,16 @@ public final class PDFInvoiceGenerator {
                 break;
             }
         }
-        if (!checkTrue) throw new PDFAnalysisException("Signaure validation failed.");
+        if (!checkTrue){ throw new PDFAnalysisException("Signaure validation failed.");}
         // 当为合法文档时候
         // 3 当前文档不能被更改, 通过文档证书时间以及entity的发票时间校验，校验到天
         if (!isSameDay(entity.getInvoiceDateStr(), signDate))
-            throw new PDFAnalysisException("Invoice date not equal with signature.[" + entity.getInvoiceDateStr() + ", " + signDate + "]");
+        {throw new PDFAnalysisException("Invoice date not equal with signature.[" + entity.getInvoiceDateStr() + ", " + signDate + "]");}
     }
 
     private boolean isSameDay(String day1, Date day2) {
         Integer day1Int = Integer.valueOf(day1.trim());
-        if (day1Int == null || day2 == null) return false;
+        if (day1Int == null || day2 == null){ return false;}
         boolean isSame = true;
         Calendar cal2 = Calendar.getInstance();
         cal2.setTime(day2);
@@ -351,7 +368,7 @@ public final class PDFInvoiceGenerator {
 
     // 校验参数
     private static boolean validatePdfInfos(String certInfos, InvoiceInfosEntity entity) {
-        if (certInfos == null || "".equals(certInfos)) return false;
+        if (certInfos == null || "".equals(certInfos)){ return false;}
         boolean checkCompanyName = false;
         if (entity.getCompanyName() != null && !"".equals(entity.getCompanyName())) {
             checkCompanyName = certInfos.contains(entity.getCompanyName());
@@ -363,8 +380,8 @@ public final class PDFInvoiceGenerator {
             if (keyValue.trim().startsWith("o=")) {
                 checkSignName = entity.getText().contains(keyValue.trim().substring(2));
             } else if (keyValue.trim().startsWith("ou=") || keyValue.trim().startsWith("cn="))
-                checkSignName = entity.getText().contains(keyValue.trim().substring(3));
-            if (checkSignName) break;
+            {checkSignName = entity.getText().contains(keyValue.trim().substring(3));}
+            if (checkSignName) {break;}
         }
         return checkCompanyName || checkSignName;
     }
@@ -394,7 +411,7 @@ public final class PDFInvoiceGenerator {
         X509CertificateHolder certificateHolder = (X509CertificateHolder) matches.iterator().next();
         X509Certificate certFromSignedData = new JcaX509CertificateConverter().getCertificate(certificateHolder);
 //        System.out.println("certFromSignedData: " + certFromSignedData);
-        if (checkSignatureDateValid) certFromSignedData.checkValidity(sig.getSignDate().getTime());
+        if (checkSignatureDateValid) {certFromSignedData.checkValidity(sig.getSignDate().getTime());}
 
         // no need verify signature data, forbid SHA256 not exist error
         /*if (!signerInformation.verify(new JcaSimpleSignerInfoVerifierBuilder().build(certFromSignedData)))

@@ -26,7 +26,8 @@ public class PDFInvoiceGeneratorTest {
 
 //        test.testGenerateFile(address);
 
-        address = "D:\\services\\code\\github\\InvoiceAnalysis\\testingFiles\\20180228\\西贝.pdf";
+//        address = "D:\\services\\code\\github\\InvoiceAnalysis\\testingFiles\\20180228\\西贝.pdf";
+        address = "D:\\Code\\Github\\InvoiceAnalysis\\testingFiles\\20180228";
         boolean checkSign = true;
         boolean checkSignDate = false;
 

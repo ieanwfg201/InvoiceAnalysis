@@ -152,7 +152,7 @@ public final class PDFInvoiceInforGenerateFactory {
         int endIndex = item.indexOf("称");
         if (startIndex<0||endIndex<=startIndex) return ;
         String checkSpace = item.substring(startIndex+1, endIndex);
-        if ("".equals(checkSpace.trim())){
+        if ("".equals(checkSpace.replaceAll("　","").trim())){
             String[] arrays = item.substring(endIndex+1).split(" ");
             for(String str: arrays){
                 if (!":".equals(str.trim())&&!"".equals(str.trim())&&!"：".equals(str.trim())){
